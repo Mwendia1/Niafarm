@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NiaFarm - Poultry Farm Management System</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="offline-bar">⚠️ You are offline. Records will sync when connection is restored.</div>
+
+<!-- AUTH SECTION -->
+<div id="authSection" class="auth-page">
+  <div>
+    <!-- LOGIN -->
+    <div id="loginForm" class="auth-card">
+      <div class="auth-logo">
+        <span class="logo-icon"></span>
+        <h1>NiaFarm</h1>
+        <p>Poultry Farm Management System</p>
+      </div>
+      <form id="loginFormEl">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="Your password" required>
+        </div>
+        <div id="loginError" class="alert alert-error" style="display:none"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px">Sign In</button>
+      </form>
+      <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--grey-600)">
+        Don't have an account? <a href="#" onclick="showAuthPage('register')" style="color:var(--primary);font-weight:600">Register here</a>
+      </p>
+    </div>
+    <!-- REGISTER -->
+    <div id="registerForm" class="auth-card" style="display:none">
+      <div class="auth-logo">
+        <span class="logo-icon"></span>
+        <h1>Create Account</h1>
+        <p>Start managing your farm today</p>
+      </div>
+      <form id="registerFormEl">
+        <div class="form-group">
+          <label class="form-label">Full Name <span class="required">*</span></label>
+          <input type="text" id="regName" class="form-control" placeholder="John Kamau" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address <span class="required">*</span></label>
+          <input type="email" id="regEmail" class="form-control" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" id="regPhone" class="form-control" placeholder="0712 345 678">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password <span class="required">*</span></label>
+          <input type="password" id="regPassword" class="form-control" placeholder="Min. 6 characters" required minlength="6">
+        </div>
+        <div id="registerError" class="alert alert-error" style="display:none"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px">Create Account</button>
+      </form>
+      <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--grey-600)">
+        Already have an account? <a href="#" onclick="showAuthPage('login')" style="color:var(--primary);font-weight:600">Sign in</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="logo-emoji"></span>
+      <div class="brand"><h2>NiaFarm</h2><p>Farm Management</p></div>
+    </div>
+    <div class="sidebar-farm-selector">
+      <select id="farmSelector"><option value="">-- Select Farm --</option></select>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-page="dashboard"><span class="nav-icon"></span> Dashboard</div>
+      <div class="nav-item" data-page="farms"><span class="nav-icon"></span> Farm Registration</div>
+      <div class="nav-item" data-page="flocks"><span class="nav-icon"></span> Flock Management</div>
+      <div class="nav-item" data-page="feeding"><span class="nav-icon"></span> Feeding Management</div>
+      <div class="nav-item" data-page="health"><span class="nav-icon"></span> Health &amp; Vaccination</div>
+      <div class="nav-item" data-page="eggs"><span class="nav-icon"></span> Egg Production</div>
+      <div class="nav-item" data-page="inventory"><span class="nav-icon"></span> Inventory Management</div>
+      <div class="nav-item" data-page="sales"><span class="nav-icon"></span> Sales &amp; Customers</div>
+      <div class="nav-item" data-page="expenses"><span class="nav-icon"></span> Expenses &amp; Finances</div>
+      <div class="nav-item" data-page="reports"><span class="nav-icon"></span> Reports &amp; Analytics</div>
+      <div class="nav-item" data-page="notifications"><span class="nav-icon"></span> Notifications <span class="nav-badge" id="notifSidebarBadge" style="display:none">0</span></div>
+      <div class="nav-item" data-page="settings"><span class="nav-icon"></span> Settings</div>
+    </nav>
+    <div style="padding:16px;border-top:1px solid rgba(255,255,255,0.1)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div class="user-avatar" id="userAvatarMenu">U</div>
+        <div><div id="userName" style="font-size:13px;font-weight:600;color:white"></div><div id="userRole" style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:capitalize"></div></div>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center" onclick="logout()">🚪 Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+      <div class="topbar-title" id="pageTitle">Dashboard</div>
+      <div class="topbar-actions">
+        <button class="topbar-btn" id="notifBtn" onclick="toggleNotifPanel()" title="Notifications">
+          🔔 <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+        </button>
+        <div class="user-avatar" id="userAvatar" onclick="navigate('settings')" title="Settings">U</div>
+      </div>
+    </header>
+
+    <!-- NOTIFICATION PANEL -->
+    <div class="notif-panel" id="notifPanel">
+      <div class="notif-panel-header">
+        <h3>🔔 Notifications</h3>
+        <button class="btn btn-sm btn-outline" onclick="markAllRead()">Mark all read</button>
+      </div>
+      <div class="notif-list" id="notifPanelList"></div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <main class="page-content">
+
+      <!-- DASHBOARD PAGE -->
+      <div class="page active" id="page-dashboard">
+        <div class="section-header">
+          <div><h2>Dashboard</h2><p>Overview of your farm activities</p></div>
+          <button class="btn btn-outline" onclick="loadDashboard()">Refresh</button>
+        </div>
+        <div id="dashboardContent"><div class="loading"><div class="spinner"></div> Loading...</div></div>
+      </div>
+
+      <!-- FARMS PAGE -->
+      <div class="page" id="page-farms">
+        <div class="section-header">
+          <div><h2>Farm Registration</h2><p>Manage your registered farms</p></div>
+          <button class="btn btn-primary" onclick="openAddFarmModal()"> Add Farm</button>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Farm Name</th><th>Location</th><th>Owner</th><th>Type</th><th>Phone</th><th>Registered</th><th>Actions</th></tr></thead>
+                <tbody id="farmsTableBody"><tr><td colspan="7"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FLOCKS PAGE -->
+      <div class="page" id="page-flocks">
+        <div class="section-header">
+          <div><h2>Flock Management</h2><p>Track all your poultry batches</p></div>
+          <button class="btn btn-primary" onclick="openAddBatchModal()"> Add Batch</button>
+        </div>
+        <div id="flockSummary" style="margin-bottom:20px"></div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Poultry Batches</h3>
+            <div class="toolbar" style="margin:0">
+              <input type="text" class="search-input" id="batchSearch" placeholder="Search batches..." oninput="filterBatches()" style="width:200px">
+              <select class="form-control" id="batchTypeFilter" onchange="filterBatches()" style="width:140px">
+                <option value="">All Types</option>
+                <option value="Broilers">Broilers</option>
+                <option value="Layers">Layers</option>
+                <option value="Kienyeji">Kienyeji</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Batch No.</th><th>Type</th><th>Breed</th><th>Initial</th><th>Current</th><th>Deaths</th><th>Arrival</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="batchesTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEEDING PAGE -->
+      <div class="page" id="page-feeding">
+        <div class="section-header">
+          <div><h2>Feeding Management</h2><p>Track feed consumption and schedules</p></div>
+          <button class="btn btn-primary" onclick="openAddFeedModal()"> Record Feeding</button>
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+          <div class="summary-card" style="flex:1;min-width:180px">
+            <div class="summary-icon green">🌾</div>
+            <div class="summary-info"><div class="label">Total Feed Stock</div><div class="value" id="feedStockTotal">0 kg</div></div>
+          </div>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('feedingTab','feedRecordsTab',this)">Feed Records</button>
+          <button class="tab-btn" onclick="switchTab('feedingTab','feedSchedulesTab',this)">Schedules</button>
+          <button class="tab-btn" onclick="switchTab('feedingTab','fcrTab',this)">FCR Calculator</button>
+        </div>
+        <div id="feedRecordsTab" class="tab-panel active">
+          <div class="toolbar">
+            <input type="text" class="search-input" id="feedSearch" placeholder="Search records..." oninput="filterFeedRecords()">
+          </div>
+          <div class="card"><div class="card-body"><div class="table-wrapper">
+            <table>
+              <thead><tr><th>Date</th><th>Batch</th><th>Feed Type</th><th>Quantity</th><th>Cost</th><th>Notes</th><th>Actions</th></tr></thead>
+              <tbody id="feedingTableBody"></tbody>
+            </table>
+          </div></div></div>
+        </div>
+        <div id="feedSchedulesTab" class="tab-panel">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+            <button class="btn btn-primary" onclick="openAddScheduleModal()">➕ Add Schedule</button>
+          </div>
+          <div class="card"><div class="card-body"><div class="table-wrapper">
+            <table>
+              <thead><tr><th>Batch</th><th>Feed Type</th><th>Quantity</th><th>Frequency</th><th>Time</th><th>Status</th></tr></thead>
+              <tbody id="scheduleTableBody"></tbody>
+            </table>
+          </div></div></div>
+        </div>
+        <div id="fcrTab" class="tab-panel">
+          <div class="card"><div class="card-body">
+            <h4 style="margin-bottom:16px">Feed Conversion Ratio (FCR) Calculator</h4>
+            <p style="color:var(--grey-600);margin-bottom:16px;font-size:13px">FCR = Total Feed Used ÷ Total Weight Gained. Lower FCR means better feed efficiency.</p>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Select Batch</label>
+                <select class="form-control batch-select" id="fcrBatchSelect"></select>
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="calculateFCR()"> Calculate FCR</button>
+            <div id="fcrResult" style="margin-top:16px"></div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- HEALTH PAGE -->
+      <div class="page" id="page-health">
+        <div class="section-header">
+          <div><h2>Health &amp; Vaccination</h2><p>Monitor flock health and vaccination schedules</p></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline" onclick="showVaccinationTemplates()">📋 Templates</button>
+            <button class="btn btn-outline" onclick="openAddVaccinationModal()">💉 Add Vaccination</button>
+            <button class="btn btn-primary" onclick="openAddHealthModal()">➕ Health Record</button>
+          </div>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('healthTab','healthRecordsTab',this)">Health Records</button>
+          <button class="tab-btn" onclick="switchTab('healthTab','vaccinationsTab',this)">Vaccinations</button>
+          <button class="tab-btn" onclick="switchTab('healthTab','vacCalendarTab',this)">Calendar</button>
+        </div>
+        <div id="healthRecordsTab" class="tab-panel active">
+          <div class="card"><div class="card-body"><div class="table-wrapper">
+            <table>
+              <thead><tr><th>Date</th><th>Batch</th><th>Type</th><th>Description</th><th>Medication</th><th>Cost</th><th>Actions</th></tr></thead>
+              <tbody id="healthTableBody"></tbody>
+            </table>
+          </div></div></div>
+        </div>
+        <div id="vaccinationsTab" class="tab-panel">
+          <div class="card"><div class="card-body"><div class="table-wrapper">
+            <table>
+              <thead><tr><th>Batch</th><th>Vaccine</th><th>Date Given</th><th>Next Due</th><th>Administered By</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="vaccinationTableBody"></tbody>
+            </table>
+          </div></div></div>
+        </div>
+        <div id="vacCalendarTab" class="tab-panel">
+          <div class="card"><div class="card-header"><h3>📅 Vaccination Calendar</h3></div>
+          <div class="card-body" id="vaccinationCalendar"></div></div>
+        </div>
+      </div>
+
+      <!-- EGGS PAGE -->
+      <div class="page" id="page-eggs">
+        <div class="section-header">
+          <div><h2>Egg Production</h2><p>Track daily egg collection and stock</p></div>
+          <button class="btn btn-primary" onclick="openAddEggModal()">➕ Record Production</button>
+        </div>
+        <div style="margin-bottom:16px;display:flex;gap:8px">
+          <button class="btn btn-outline egg-period-btn" onclick="filterEggsByPeriod('week')">This Week</button>
+          <button class="btn btn-primary egg-period-btn" onclick="filterEggsByPeriod('month')">This Month</button>
+          <button class="btn btn-outline egg-period-btn" onclick="filterEggsByPeriod('year')">This Year</button>
+        </div>
+        <div id="eggSummaryCards" style="margin-bottom:20px"></div>
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-header"><h3>📈 Production Trend</h3></div>
+          <div class="card-body"><div class="chart-container"><canvas id="eggProdChart"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Production Records</h3></div>
+          <div class="card-body"><div class="table-wrapper">
+            <table>
+              <thead><tr><th>Date</th><th>Batch</th><th>Total</th><th>Good</th><th>Broken</th><th>Damaged</th><th>Sold</th><th>Notes</th><th>Actions</th></tr></thead>
+              <tbody id="eggTableBody"></tbody>
+            </table>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- INVENTORY PAGE -->
+      <div class="page" id="page-inventory">
+        <div class="section-header">
+          <div><h2>Inventory Management</h2><p>Track farm supplies and stock levels</p></div>
+          <button class="btn btn-primary" onclick="openAddInventoryModal()">➕ Add Item</button>
+        </div>
+        <div id="inventoryAlerts" style="margin-bottom:16px"></div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Inventory Items</h3>
+            <div class="toolbar" style="margin:0">
+              <input type="text" class="search-input" id="inventorySearch" placeholder="Search items..." oninput="filterInventory()" style="width:200px">
+              <select class="form-control" id="inventoryCatFilter" onchange="filterInventory()" style="width:160px">
+                <option value="">All Categories</option>
+                <option value="feeds">Feeds</option>
+                <option value="vaccines">Vaccines</option>
+                <option value="medicines">Medicines</option>
+                <option value="feeders">Feeders</option>
+                <option value="drinkers">Drinkers</option>
+                <option value="equipment">Equipment</option>
+                <option value="cleaning">Cleaning</option>
+                <option value="packaging">Packaging</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body"><div class="table-wrapper">
+            <table>
+              <thead><tr><th>Item Name</th><th>Category</th><th>Stock</th><th>Unit Price</th><th>Supplier</th><th>Expiry</th><th>Purchased</th><th>Actions</th></tr></thead>
+              <tbody id="inventoryTableBody"></tbody>
+            </table>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- SALES PAGE -->
+      <div class="page" id="page-sales">
+        <div class="section-header">
+          <div><h2>Sales &amp; Customers</h2><p>Manage sales records and customer information</p></div>
+          <button class="btn btn-primary" onclick="openNewSaleModal()">➕ New Sale</button>
+        </div>
+        <div id="salesSummaryCards" style="margin-bottom:20px"></div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('salesTab','salesListTab',this)">Sales Records</button>
+          <button class="tab-btn" onclick="switchTab('salesTab','customersTab',this)">Customers</button>
+        </div>
+        <div id="salesListTab" class="tab-panel active">
+          <div class="toolbar">
+            <input type="text" class="search-input" id="salesSearch" placeholder="Search sales..." oninput="filterSales()">
+          </div>
+          <div class="card"><div class="card-body"><div class="table-wrapper">
+            <table>
+              <thead><tr><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="salesTableBody"></tbody>
+            </table>
+          </div></div></div>
+        </div>
+        <div id="customersTab" class="tab-panel">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+            <button class="btn btn-primary" onclick="openAddCustomerModal()">➕ Add Customer</button>
+          </div>
+          <div class="card"><div class="card-body"><div class="table-wrapper">
+            <table>
+              <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Type</th><th>Actions</th></tr></thead>
+              <tbody id="customersTableBody"></tbody>
+            </table>
+          </div></div></div>
+        </div>
+      </div>
+
+      <!-- EXPENSES PAGE -->
+      <div class="page" id="page-expenses">
+        <div class="section-header">
+          <div><h2>Expenses &amp; Finances</h2><p>Track income, expenses and profitability</p></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline" onclick="openAddIncomeModal()">💰 Add Income</button>
+            <button class="btn btn-primary" onclick="openAddExpenseModal()">➕ Add Expense</button>
+          </div>
+        </div>
+        <div id="financeSummaryCards" style="margin-bottom:20px"></div>
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end">
+          <div class="form-group" style="margin:0">
+            <label class="form-label">From</label>
+            <input type="date" class="form-control" id="finStartDate" style="width:160px">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">To</label>
+            <input type="date" class="form-control" id="finEndDate" style="width:160px">
+          </div>
+          <button class="btn btn-outline" onclick="filterFinances()">🔍 Filter</button>
+          <button class="btn btn-secondary" onclick="loadExpenses()">🔄 Reset</button>
+        </div>
+        <div class="charts-grid" style="margin-bottom:20px">
+          <div class="card"><div class="card-header"><h3>📊 Monthly Income vs Expenses</h3></div>
+            <div class="card-body"><div class="chart-container"><canvas id="finExpChart"></canvas></div></div></div>
+          <div class="card"><div class="card-header"><h3>🥧 Expenses by Category</h3></div>
+            <div class="card-body"><div class="chart-container"><canvas id="finPieChart"></canvas></div></div></div>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('finTab','expensesListTab',this)">Expenses</button>
+          <button class="tab-btn" onclick="switchTab('finTab','incomeListTab',this)">Income</button>
+        </div>
+        <div id="expensesListTab" class="tab-panel active">
+          <div class="card"><div class="card-body"><div class="table-wrapper">
+            <table>
+              <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th><th>Payment</th><th>Actions</th></tr></thead>
+              <tbody id="expensesTableBody"></tbody>
+            </table>
+          </div></div></div>
+        </div>
+        <div id="incomeListTab" class="tab-panel">
+          <div class="card"><div class="card-body"><div class="table-wrapper">
+            <table>
+              <thead><tr><th>Date</th><th>Source</th><th>Description</th><th>Amount</th><th>Payment</th></tr></thead>
+              <tbody id="incomeTableBody"></tbody>
+            </table>
+          </div></div></div>
+        </div>
+      </div>
+
+      <!-- REPORTS PAGE -->
+      <div class="page" id="page-reports">
+        <div class="section-header">
+          <div><h2>Reports &amp; Analytics</h2><p>Generate detailed farm performance reports</p></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline" onclick="printReport()">🖨️ Print</button>
+            <button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Report Type</label>
+                <select class="form-control" id="reportType">
+                  <option value="">-- Select Report --</option>
+                  <option value="population">Poultry Population</option>
+                  <option value="mortality">Mortality Report</option>
+                  <option value="feed">Feed Consumption</option>
+                  <option value="production">Egg Production</option>
+                  <option value="vaccination">Vaccination History</option>
+                  <option value="inventory">Inventory Usage</option>
+                  <option value="financial">Financial Report</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Batch (optional)</label>
+                <select class="form-control batch-select" id="reportBatchFilter">
+                  <option value="">All Batches</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="reportStartDate">
+              </div>
+              <div class="form-group">
+                <label class="form-label">End Date</label>
+                <input type="date" class="form-control" id="reportEndDate">
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="generateReport()">📊 Generate Report</button>
+          </div>
+        </div>
+        <div id="reportOutput"></div>
+      </div>
+
+      <!-- NOTIFICATIONS PAGE -->
+      <div class="page" id="page-notifications">
+        <div class="section-header">
+          <div><h2>Notifications &amp; Reminders</h2><p>Stay on top of important farm activities</p></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline" onclick="markAllRead()">✅ Mark All Read</button>
+            <button class="btn btn-primary" onclick="openAddReminderModal()">➕ Add Reminder</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body" id="notificationsContent">
+            <div class="loading"><div class="spinner"></div> Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS PAGE -->
+      <div class="page" id="page-settings">
+        <div class="section-header">
+          <div><h2>Settings</h2><p>Manage your account and preferences</p></div>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('settingsTab','profileTab',this)">Profile</button>
+          <button class="tab-btn" onclick="switchTab('settingsTab','securityTab',this)">Security</button>
+          <button class="tab-btn" onclick="switchTab('settingsTab','usersTab',this)">Users</button>
+        </div>
+        <div id="profileTab" class="tab-panel active">
+          <div class="card"><div class="card-body" style="max-width:500px">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="settingName">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="settingEmail" disabled>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-control" id="settingPhone">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Role</label>
+              <p id="settingRole" style="padding:9px 0;color:var(--grey-700);text-transform:capitalize"></p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Currency</label>
+              <select class="form-control" style="max-width:200px"><option value="KES">KSh (KES) - Kenyan Shilling</option></select>
+            </div>
+            <button class="btn btn-primary" onclick="saveProfile()">💾 Save Profile</button>
+          </div></div>
+        </div>
+        <div id="securityTab" class="tab-panel">
+          <div class="card"><div class="card-body" style="max-width:400px">
+            <h4 style="margin-bottom:16px">Change Password</h4>
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="currentPassword">
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input type="password" class="form-control" id="newPassword">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" id="confirmPassword">
+            </div>
+            <button class="btn btn-primary" onclick="changePassword()">🔒 Change Password</button>
+          </div></div>
+        </div>
+        <div id="usersTab" class="tab-panel">
+          <div class="card"><div class="card-body">
+            <h4 style="margin-bottom:16px">System Users</h4>
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Joined</th></tr></thead>
+                <tbody id="usersTableBody"><tr><td colspan="6" style="text-align:center;color:var(--grey-500)">Loading users...</td></tr></tbody>
+              </table>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- FARM MODAL -->
+<div class="modal-overlay" id="farmModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 id="farmModalTitle">Register New Farm</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="farmForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Farm Name <span class="required">*</span></label>
+            <input type="text" name="name" class="form-control" placeholder="e.g. Kamau Poultry Farm" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input type="text" name="location" class="form-control" placeholder="e.g. Kiambu, Kenya">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Owner Name</label>
+            <input type="text" name="owner_name" class="form-control" placeholder="Full name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" name="phone" class="form-control" placeholder="0712 345 678">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" placeholder="farm@email.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Farm Size</label>
+            <input type="text" name="size" class="form-control" placeholder="e.g. 2 acres">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type of Farming</label>
+            <select name="farming_type" class="form-control">
+              <option value="">Select type</option>
+              <option value="Broiler Production">Broiler Production</option>
+              <option value="Layer Production">Layer Production</option>
+              <option value="Kienyeji Farming">Kienyeji Farming</option>
+              <option value="Mixed Poultry">Mixed Poultry</option>
+              <option value="Hatchery">Hatchery</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Number of Houses</label>
+            <input type="number" name="num_houses" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Registration Date</label>
+            <input type="date" name="registration_date" id="farmRegDate" class="form-control">
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFarm()">💾 Save Farm</button>
+    </div>
+  </div>
+</div>
+
+<!-- BATCH MODAL -->
+<div class="modal-overlay" id="batchModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 id="batchModalTitle">Add New Batch</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="batchForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Batch Number <span class="required">*</span></label>
+            <input type="text" name="batch_number" class="form-control" placeholder="e.g. BRO-2024-001" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Poultry Type <span class="required">*</span></label>
+            <select name="poultry_type" class="form-control" required>
+              <option value="">Select type</option>
+              <option value="Broilers">Broilers</option>
+              <option value="Layers">Layers</option>
+              <option value="Kienyeji">Kienyeji</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Breed</label>
+            <input type="text" name="breed" class="form-control" placeholder="e.g. Cobb 500, ISA Brown">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Number of Birds <span class="required">*</span></label>
+            <input type="number" name="initial_count" class="form-control" placeholder="500" min="1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Arrival Date <span class="required">*</span></label>
+            <input type="date" name="arrival_date" id="batchArrivalDate" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Age at Arrival (weeks)</label>
+            <input type="number" name="age_weeks" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Supplier</label>
+            <input type="text" name="supplier" class="form-control" placeholder="Supplier name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Purchase Price (KSh)</label>
+            <input type="number" name="purchase_price" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-control">
+              <option value="active">Active</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2" placeholder="Additional notes..."></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveBatch()">💾 Save Batch</button>
+    </div>
+  </div>
+</div>
+
+<!-- BATCH DETAIL MODAL -->
+<div class="modal-overlay" id="batchDetailModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>Batch Details</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="batchDetailContent"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- MORTALITY MODAL -->
+<div class="modal-overlay" id="mortalityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Record Mortality</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:16px;color:var(--grey-600)">Batch: <strong id="mortalityBatchName"></strong></p>
+      <form id="mortalityForm">
+        <div class="form-group">
+          <label class="form-label">Date <span class="required">*</span></label>
+          <input type="date" name="date" id="mortalityDate" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Number of Deaths <span class="required">*</span></label>
+          <input type="number" name="count" class="form-control" placeholder="0" min="1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cause of Death</label>
+          <select name="cause" class="form-control">
+            <option value="">Unknown</option>
+            <option value="Disease">Disease</option>
+            <option value="Injury">Injury</option>
+            <option value="Predator">Predator</option>
+            <option value="Starvation">Starvation</option>
+            <option value="Heat Stress">Heat Stress</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-danger" onclick="saveMortality()">💀 Record Deaths</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEED RECORD MODAL -->
+<div class="modal-overlay" id="feedModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Record Feeding</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="feedForm">
+        <div class="form-group">
+          <label class="form-label">Batch <span class="required">*</span></label>
+          <select name="batch_id" class="form-control batch-select" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Feed Type <span class="required">*</span></label>
+          <select name="feed_name" class="form-control" required>
+            <option value="">Select feed</option>
+            <option value="Chick Starter">Chick Starter</option>
+            <option value="Grower Feed">Grower Feed</option>
+            <option value="Broiler Finisher">Broiler Finisher</option>
+            <option value="Layer Mash">Layer Mash</option>
+            <option value="Kienyeji Feed">Kienyeji Feed</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Quantity (kg) <span class="required">*</span></label>
+            <input type="number" name="quantity_kg" class="form-control" placeholder="0" min="0" step="0.1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cost (KSh)</label>
+            <input type="number" name="cost" class="form-control" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date <span class="required">*</span></label>
+          <input type="date" name="date" id="feedDate" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFeedRecord()">💾 Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEED SCHEDULE MODAL -->
+<div class="modal-overlay" id="scheduleModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Feeding Schedule</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="scheduleForm">
+        <div class="form-group">
+          <label class="form-label">Batch <span class="required">*</span></label>
+          <select name="batch_id" class="form-control batch-select" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Feed Type <span class="required">*</span></label>
+          <select name="feed_type" class="form-control" required>
+            <option value="">Select feed</option>
+            <option value="Chick Starter">Chick Starter</option>
+            <option value="Grower Feed">Grower Feed</option>
+            <option value="Broiler Finisher">Broiler Finisher</option>
+            <option value="Layer Mash">Layer Mash</option>
+            <option value="Kienyeji Feed">Kienyeji Feed</option>
+          </select>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Quantity per Feed (kg) <span class="required">*</span></label>
+            <input type="number" name="quantity_kg" class="form-control" placeholder="0" min="0" step="0.1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Frequency <span class="required">*</span></label>
+            <select name="frequency" class="form-control" required>
+              <option value="twice_daily">Twice Daily</option>
+              <option value="once_daily">Once Daily</option>
+              <option value="three_times_daily">Three Times Daily</option>
+              <option value="ad_libitum">Ad Libitum (Free Choice)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Preferred Time</label>
+          <input type="time" name="time_of_day" class="form-control">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSchedule()">💾 Save Schedule</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEALTH RECORD MODAL -->
+<div class="modal-overlay" id="healthModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>Add Health Record</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="healthForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Batch <span class="required">*</span></label>
+            <select name="batch_id" class="form-control batch-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date <span class="required">*</span></label>
+            <input type="date" name="date" id="healthDate" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Record Type <span class="required">*</span></label>
+            <select name="type" class="form-control" required>
+              <option value="">Select type</option>
+              <option value="disease">Disease</option>
+              <option value="treatment">Treatment</option>
+              <option value="checkup">Checkup</option>
+              <option value="injury">Injury</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Veterinarian</label>
+            <input type="text" name="vet_name" class="form-control" placeholder="Vet name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Medication</label>
+            <input type="text" name="medication" class="form-control" placeholder="Medicine name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dosage</label>
+            <input type="text" name="dosage" class="form-control" placeholder="e.g. 1ml per litre">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cost (KSh)</label>
+            <input type="number" name="cost" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Outcome</label>
+            <select name="outcome" class="form-control">
+              <option value="">Pending</option>
+              <option value="recovered">Recovered</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="died">Died</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description / Symptoms</label>
+          <textarea name="description" class="form-control" rows="2" placeholder="Describe symptoms or condition..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Treatment Given</label>
+          <textarea name="treatment" class="form-control" rows="2" placeholder="Treatment details..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveHealthRecord()">💾 Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- VACCINATION MODAL -->
+<div class="modal-overlay" id="vaccinationModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>Add Vaccination Record</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="vaccinationForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Batch <span class="required">*</span></label>
+            <select name="batch_id" class="form-control batch-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Vaccine Name <span class="required">*</span></label>
+            <input type="text" name="vaccine_name" class="form-control" placeholder="e.g. Newcastle Disease" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date Given</label>
+            <input type="date" name="date_given" id="vacDateGiven" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Next Due Date</label>
+            <input type="date" name="next_due_date" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Age at Vaccination (days)</label>
+            <input type="number" name="age_at_vaccination" class="form-control" placeholder="e.g. 7" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Method</label>
+            <select name="method" class="form-control">
+              <option value="">Select method</option>
+              <option value="Eye drop">Eye Drop</option>
+              <option value="Drinking water">Drinking Water</option>
+              <option value="Injection">Injection</option>
+              <option value="Wing web stab">Wing Web Stab</option>
+              <option value="Spray">Spray</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Administered By</label>
+            <input type="text" name="administered_by" class="form-control" placeholder="Name or vet">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cost (KSh)</label>
+            <input type="number" name="cost" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-control">
+              <option value="scheduled">Scheduled</option>
+              <option value="completed">Completed</option>
+              <option value="skipped">Skipped</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveVaccination()">💾 Save Vaccination</button>
+    </div>
+  </div>
+</div>
+
+<!-- VACCINATION TEMPLATE MODAL -->
+<div class="modal-overlay" id="templateModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>📋 Vaccination Schedule Templates</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-warning" id="templateDisclaimer" style="margin-bottom:16px"></div>
+      <div class="form-group">
+        <label class="form-label">Poultry Type</label>
+        <select class="form-control" id="templateType" onchange="showVaccinationTemplates()" style="max-width:200px">
+          <option value="broiler">Broilers</option>
+          <option value="layer">Layers</option>
+          <option value="kienyeji">Kienyeji</option>
+        </select>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Age</th><th>Vaccine</th><th>Method</th><th>Notes</th></tr></thead>
+          <tbody id="templateTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- EGG PRODUCTION MODAL -->
+<div class="modal-overlay" id="eggModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>Record Egg Production</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="eggForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Batch <span class="required">*</span></label>
+            <select name="batch_id" class="form-control batch-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date <span class="required">*</span></label>
+            <input type="date" name="date" id="eggDate" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Collected</label>
+            <input type="number" name="total_collected" id="eggTotal" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Good Eggs (auto)</label>
+            <input type="number" name="good_eggs" id="eggGood" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Broken Eggs</label>
+            <input type="number" name="broken_eggs" id="eggBroken" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Damaged Eggs</label>
+            <input type="number" name="damaged_eggs" id="eggDamaged" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Small Eggs</label>
+            <input type="number" name="small_eggs" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Medium Eggs</label>
+            <input type="number" name="medium_eggs" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Large Eggs</label>
+            <input type="number" name="large_eggs" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Extra Large Eggs</label>
+            <input type="number" name="xlarge_eggs" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Eggs Sold Today</label>
+            <input type="number" name="eggs_sold" class="form-control" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEggRecord()">💾 Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- INVENTORY MODAL -->
+<div class="modal-overlay" id="inventoryModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 id="inventoryModalTitle">Add Inventory Item</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="inventoryForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Item Name <span class="required">*</span></label>
+            <input type="text" name="name" class="form-control" placeholder="e.g. Layer Mash" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category <span class="required">*</span></label>
+            <select name="category" class="form-control" required>
+              <option value="">Select category</option>
+              <option value="feeds">Feeds</option>
+              <option value="vaccines">Vaccines</option>
+              <option value="medicines">Medicines</option>
+              <option value="feeders">Feeders</option>
+              <option value="drinkers">Drinkers</option>
+              <option value="equipment">Equipment</option>
+              <option value="cleaning">Cleaning Materials</option>
+              <option value="packaging">Packaging Materials</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Quantity</label>
+            <input type="number" name="quantity" class="form-control" placeholder="0" min="0" step="0.1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Unit <span class="required">*</span></label>
+            <input type="text" name="unit" class="form-control" placeholder="kg / litres / pcs" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Unit Price (KSh)</label>
+            <input type="number" name="purchase_price" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Supplier</label>
+            <input type="text" name="supplier" class="form-control" placeholder="Supplier name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Purchase Date</label>
+            <input type="date" name="purchase_date" id="invPurchaseDate" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expiry Date</label>
+            <input type="date" name="expiry_date" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Low Stock Alert Threshold</label>
+            <input type="number" name="low_stock_threshold" class="form-control" placeholder="10" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveInventoryItem()">💾 Save Item</button>
+    </div>
+  </div>
+</div>
+
+<!-- INVENTORY TRANSACTION MODAL -->
+<div class="modal-overlay" id="transactionModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Record Stock Transaction</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:16px;color:var(--grey-600)">Item: <strong id="transactionItemName"></strong></p>
+      <form id="transactionForm">
+        <div class="form-group">
+          <label class="form-label">Transaction Type <span class="required">*</span></label>
+          <select name="type" class="form-control" required>
+            <option value="purchase">Purchase (Add Stock)</option>
+            <option value="usage">Usage (Deduct Stock)</option>
+            <option value="adjustment_in">Adjustment In</option>
+            <option value="adjustment_out">Adjustment Out</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Quantity <span class="required">*</span></label>
+          <input type="number" name="quantity" class="form-control" placeholder="0" min="0.1" step="0.1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date <span class="required">*</span></label>
+          <input type="date" name="date" id="transactionDate" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reference</label>
+          <input type="text" name="reference" class="form-control" placeholder="Invoice / receipt number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTransaction()">💾 Save Transaction</button>
+    </div>
+  </div>
+</div>
+
+<!-- SALE MODAL -->
+<div class="modal-overlay" id="saleModal">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <h3>New Sale</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="saleForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Customer Name</label>
+            <input type="text" name="customer_name" class="form-control" placeholder="Customer name or walk-in">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sale Date <span class="required">*</span></label>
+            <input type="date" name="sale_date" id="saleDate" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select name="payment_method" class="form-control">
+              <option value="cash">Cash</option>
+              <option value="mpesa">M-Pesa</option>
+              <option value="bank_transfer">Bank Transfer</option>
+              <option value="cheque">Cheque</option>
+              <option value="credit">Credit</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment Status</label>
+            <select name="payment_status" class="form-control">
+              <option value="paid">Paid</option>
+              <option value="pending">Pending</option>
+              <option value="partial">Partial</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <input type="text" name="notes" class="form-control" placeholder="Optional notes">
+        </div>
+      </form>
+      <div style="margin-top:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <h4>Sale Items</h4>
+          <button class="btn btn-outline btn-sm" onclick="addSaleItem()">➕ Add Item</button>
+        </div>
+        <div id="saleItemsContainer"></div>
+        <div style="text-align:right;margin-top:12px;font-size:18px;font-weight:700;color:var(--primary)">
+          Total: <span id="saleTotalDisplay">KSh 0</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSale()">💾 Record Sale</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECEIPT MODAL -->
+<div class="modal-overlay" id="receiptModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>🧾 Sales Receipt</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="receiptContent"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Close</button>
+      <button class="btn btn-primary" onclick="printReceipt()">🖨️ Print Receipt</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMER MODAL -->
+<div class="modal-overlay" id="customerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="customerModalTitle">Add Customer</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="customerForm">
+        <div class="form-group">
+          <label class="form-label">Full Name <span class="required">*</span></label>
+          <input type="text" name="name" class="form-control" placeholder="Customer name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" name="phone" class="form-control" placeholder="0712 345 678">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" name="email" class="form-control" placeholder="customer@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <input type="text" name="address" class="form-control" placeholder="Town / Location">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Customer Type</label>
+          <select name="customer_type" class="form-control">
+            <option value="individual">Individual</option>
+            <option value="business">Business</option>
+            <option value="wholesale">Wholesale</option>
+            <option value="retail">Retail</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCustomer()">💾 Save Customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPENSE MODAL -->
+<div class="modal-overlay" id="expenseModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="expenseModalTitle">Record Expense</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="expenseForm">
+        <div class="form-group">
+          <label class="form-label">Category <span class="required">*</span></label>
+          <select name="category" class="form-control" required>
+            <option value="">Select category</option>
+            <option value="feeds">Feed Purchases</option>
+            <option value="poultry">Poultry Purchases</option>
+            <option value="medicines">Vaccines &amp; Medicines</option>
+            <option value="labour">Labour Costs</option>
+            <option value="electricity">Electricity</option>
+            <option value="water">Water</option>
+            <option value="transport">Transport</option>
+            <option value="equipment">Equipment</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description <span class="required">*</span></label>
+          <input type="text" name="description" class="form-control" placeholder="Brief description" required>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Amount (KSh) <span class="required">*</span></label>
+            <input type="number" name="amount" class="form-control" placeholder="0" min="0" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date <span class="required">*</span></label>
+            <input type="date" name="date" id="expenseDate" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select name="payment_method" class="form-control">
+              <option value="cash">Cash</option>
+              <option value="mpesa">M-Pesa</option>
+              <option value="bank_transfer">Bank Transfer</option>
+              <option value="cheque">Cheque</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reference / Receipt No.</label>
+            <input type="text" name="reference" class="form-control" placeholder="Optional">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveExpense()">💾 Save Expense</button>
+    </div>
+  </div>
+</div>
+
+<!-- INCOME MODAL -->
+<div class="modal-overlay" id="incomeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Record Income</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="incomeForm">
+        <div class="form-group">
+          <label class="form-label">Source <span class="required">*</span></label>
+          <select name="source" class="form-control" required>
+            <option value="">Select source</option>
+            <option value="sales">Product Sales</option>
+            <option value="eggs">Egg Sales</option>
+            <option value="live_birds">Live Bird Sales</option>
+            <option value="manure">Manure Sales</option>
+            <option value="grant">Grant / Subsidy</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <input type="text" name="description" class="form-control" placeholder="Brief description">
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Amount (KSh) <span class="required">*</span></label>
+            <input type="number" name="amount" class="form-control" placeholder="0" min="0" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date <span class="required">*</span></label>
+            <input type="date" name="date" id="incomeDate" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select name="payment_method" class="form-control">
+            <option value="cash">Cash</option>
+            <option value="mpesa">M-Pesa</option>
+            <option value="bank_transfer">Bank Transfer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveIncome()">💾 Save Income</button>
+    </div>
+  </div>
+</div>
+
+<!-- REMINDER MODAL -->
+<div class="modal-overlay" id="reminderModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Reminder</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="reminderForm">
+        <div class="form-group">
+          <label class="form-label">Title <span class="required">*</span></label>
+          <input type="text" name="title" class="form-control" placeholder="Reminder title" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message <span class="required">*</span></label>
+          <textarea name="message" class="form-control" rows="3" placeholder="Reminder details..." required></textarea>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select name="type" class="form-control">
+              <option value="reminder">General Reminder</option>
+              <option value="vaccination">Vaccination</option>
+              <option value="feeding">Feeding</option>
+              <option value="health">Health</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select name="priority" class="form-control">
+              <option value="normal">Normal</option>
+              <option value="high">High</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Due Date</label>
+          <input type="date" name="due_date" class="form-control">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close">Cancel</button>
+      <button class="btn btn-primary" onclick="saveReminder()">💾 Save Reminder</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/farms.js"></script>
+<script src="js/flocks.js"></script>
+<script src="js/feeding.js"></script>
+<script src="js/health.js"></script>
+<script src="js/eggs.js"></script>
+<script src="js/inventory.js"></script>
+<script src="js/sales.js"></script>
+<script src="js/expenses.js"></script>
+<script src="js/reports.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/main.js"></script>
+<script>
+// Tab switcher utility
+function switchTab(groupId, tabId, btn) {
+  const panels = document.querySelectorAll(`#page-${getCurrentPage()} .tab-panel`);
+  panels.forEach(p => p.classList.remove('active'));
+  document.getElementById(tabId)?.classList.add('active');
+  btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Load schedules when switching to that tab
+  if (tabId === 'feedSchedulesTab') loadFeedSchedules();
+}
+</script>
+</body>
+</html>
