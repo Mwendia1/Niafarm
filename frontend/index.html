@@ -3,33 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NiaFarm - Poultry Farm Management System</title>
+<title>FarmNest - Poultry Farm Management System</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-<div class="offline-bar" id="impersonateBanner" style="display:none;background:#7c3aed"> Viewing as another user. <a href="#" onclick="returnToAdmin()" style="color:white;font-weight:700;text-decoration:underline">Return to Admin</a></div>
-
-<div class="offline-bar"> You are offline. Records will sync when connection is restored.</div>
+<div class="offline-bar">You are offline. Records will sync when connection is restored.</div>
 
 <!-- AUTH SECTION -->
 <div id="authSection" class="auth-page">
-  <div>
+  <video class="auth-video-bg" autoplay muted loop playsinline>
+    <source src="http://localhost:3000/uploads/avatars/2rre.mp4" type="video/mp4">
+  </video>
+  <div class="auth-video-overlay"></div>
+  <div class="auth-wrapper">
     <!-- LOGIN -->
     <div id="loginForm" class="auth-card">
       <div class="auth-logo">
-        <div style="font-size:40px;font-weight:900;color:var(--primary-dark);letter-spacing:-2px">NF</div>
-        <h1>NiaFarm</h1>
+        <span class="logo-icon">FN</span>
+        <h1>FarmNest</h1>
         <p>Poultry Farm Management System</p>
       </div>
       <form id="loginFormEl">
         <div class="form-group">
           <label class="form-label">Email Address</label>
-          <input type="email" id="loginEmail" class="form-control" placeholder="you@example.com" required>
+          <input type="email" id="loginEmail" class="form-control" required>
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input type="password" id="loginPassword" class="form-control" placeholder="Your password" required>
+          <input type="password" id="loginPassword" class="form-control" required>
         </div>
         <div id="loginError" class="alert alert-error" style="display:none"></div>
         <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px">Sign In</button>
@@ -41,26 +44,26 @@
     <!-- REGISTER -->
     <div id="registerForm" class="auth-card" style="display:none">
       <div class="auth-logo">
-        <div style="font-size:40px;font-weight:900;color:var(--primary-dark);letter-spacing:-2px">NF</div>
+        <span class="logo-icon">FN</span>
         <h1>Create Account</h1>
         <p>Start managing your farm today</p>
       </div>
       <form id="registerFormEl">
         <div class="form-group">
           <label class="form-label">Full Name <span class="required">*</span></label>
-          <input type="text" id="regName" class="form-control" placeholder="John Kamau" required>
+          <input type="text" id="regName" class="form-control" required>
         </div>
         <div class="form-group">
           <label class="form-label">Email Address <span class="required">*</span></label>
-          <input type="email" id="regEmail" class="form-control" placeholder="you@example.com" required>
+          <input type="email" id="regEmail" class="form-control"  required>
         </div>
         <div class="form-group">
           <label class="form-label">Phone Number</label>
-          <input type="tel" id="regPhone" class="form-control" placeholder="0712 345 678">
+          <input type="tel" id="regPhone" class="form-control" >
         </div>
         <div class="form-group">
           <label class="form-label">Password <span class="required">*</span></label>
-          <input type="password" id="regPassword" class="form-control" placeholder="Min. 6 characters" required minlength="6">
+          <input type="password" id="regPassword" class="form-control" required minlength="6">
         </div>
         <div id="registerError" class="alert alert-error" style="display:none"></div>
         <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px">Create Account</button>
@@ -70,6 +73,75 @@
       </p>
     </div>
   </div>
+
+  <!-- FOOTER -->
+  <footer class="auth-footer">
+    <div class="auth-footer-inner">
+      <div class="auth-footer-brand">
+        <span class="auth-footer-logo">FN</span>
+        <div>
+          <div class="auth-footer-name">FarmNest</div>
+          <div class="auth-footer-tagline">Smart Poultry Farm Management</div>
+          <p class="auth-footer-desc">Manage Better. Grow Faster. Profit More.</p>
+        </div>
+      </div>
+
+      <div class="auth-footer-links">
+        <div class="auth-footer-col">
+          <h4>Learn</h4>
+          <a href="#">Poultry Farming Guide</a>
+          <a href="#">Broiler Farming</a>
+          <a href="#">Layer Farming</a>
+          <a href="#">Feeding and Nutrition</a>
+          <a href="#">Vaccination and Health</a>
+          <a href="#">Poultry Management Tips</a>
+        </div>
+        <div class="auth-footer-col">
+          <h4>Farm Management</h4>
+          <a href="#">Dashboard</a>
+          <a href="#">Flock Management</a>
+          <a href="#">Egg Production</a>
+          <a href="#">Feed Management</a>
+          <a href="#">Health Records</a>
+          <a href="#">Sales and Expenses</a>
+        </div>
+        <div class="auth-footer-col">
+          <h4>Resources</h4>
+          <a href="#">Getting Started</a>
+          <a href="#">Training and Tutorials</a>
+          <a href="#">Poultry Farming Resources</a>
+          <a href="#">Frequently Asked Questions</a>
+        </div>
+        <div class="auth-footer-col">
+          <h4>Support</h4>
+          <a href="#">Contact Us</a>
+          <a href="#">Help Center</a>
+          <a href="#">Report a Problem</a>
+          <a href="#">Send Feedback</a>
+        </div>
+        <div class="auth-footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms and Conditions</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
+
+      <div class="auth-footer-social">
+        <h4>Connect With Us</h4>
+        <div class="auth-footer-social-links">
+          <a href="#" class="social-btn">Facebook</a>
+          <a href="#" class="social-btn">Instagram</a>
+          <a href="#" class="social-btn">TikTok</a>
+          <a href="https://wa.me/254710445816?text=Hello%20FarmNest!%20I%20need%20assistance." class="social-btn">WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="auth-footer-bottom">
+        <span>© 2026 FarmNest. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
 </div>
 
 <!-- MAIN APP -->
@@ -77,32 +149,32 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <span class="logo-emoji" style="font-size:22px;font-weight:900;color:white;letter-spacing:-1px">NF</span>
-      <div class="brand"><h2>NiaFarm</h2><p>Farm Management</p></div>
+      <span class="logo-emoji">FN</span>
+      <div class="brand"><h2>FarmNest</h2><p>Farm Management</p></div>
     </div>
     <div class="sidebar-farm-selector">
       <select id="farmSelector"><option value="">-- Select Farm --</option></select>
     </div>
     <nav class="sidebar-nav">
-      <div class="nav-item active" data-page="dashboard"><span class="nav-icon">&#9632;</span> Dashboard</div>
-      <div class="nav-item" data-page="farms"><span class="nav-icon">&#9632;</span> Farm Registration</div>
-      <div class="nav-item" data-page="flocks"><span class="nav-icon">&#9632;</span> Flock Management</div>
-      <div class="nav-item" data-page="feeding"><span class="nav-icon">&#9632;</span> Feeding Management</div>
-      <div class="nav-item" data-page="health"><span class="nav-icon">&#9632;</span> Health &amp; Vaccination</div>
-      <div class="nav-item" data-page="eggs"><span class="nav-icon">&#9632;</span> Egg Production</div>
-      <div class="nav-item" data-page="inventory"><span class="nav-icon">&#9632;</span> Inventory Management</div>
-      <div class="nav-item" data-page="sales"><span class="nav-icon">&#9632;</span> Sales &amp; Customers</div>
-      <div class="nav-item" data-page="expenses"><span class="nav-icon">&#9632;</span> Expenses &amp; Finances</div>
-      <div class="nav-item" data-page="reports"><span class="nav-icon">&#9632;</span> Reports &amp; Analytics</div>
-      <div class="nav-item" data-page="notifications"><span class="nav-icon">&#9632;</span> Notifications <span class="nav-badge" id="notifSidebarBadge" style="display:none">0</span></div>
-      <div class="nav-item" data-page="settings"><span class="nav-icon">&#9632;</span> Settings</div>
+      <div class="nav-item active" data-page="dashboard"><span class="nav-icon"></span> Dashboard</div>
+      <div class="nav-item" data-page="farms"><span class="nav-icon"></span> Farm Registration</div>
+      <div class="nav-item" data-page="flocks"><span class="nav-icon"></span> Flock Management</div>
+      <div class="nav-item" data-page="feeding"><span class="nav-icon"></span> Feeding Management</div>
+      <div class="nav-item" data-page="health"><span class="nav-icon"></span> Health &amp; Vaccination</div>
+      <div class="nav-item" data-page="eggs"><span class="nav-icon"></span> Egg Production</div>
+      <div class="nav-item" data-page="inventory"><span class="nav-icon"></span> Inventory Management</div>
+      <div class="nav-item" data-page="sales"><span class="nav-icon"></span> Sales &amp; Customers</div>
+      <div class="nav-item" data-page="expenses"><span class="nav-icon"></span> Expenses &amp; Finances</div>
+      <div class="nav-item" data-page="reports"><span class="nav-icon"></span> Reports &amp; Analytics</div>
+      <div class="nav-item" data-page="notifications"><span class="nav-icon"></span> Notifications <span class="nav-badge" id="notifSidebarBadge" style="display:none">0</span></div>
+      <div class="nav-item" data-page="settings"><span class="nav-icon"></span> Settings</div>
     </nav>
     <div style="padding:16px;border-top:1px solid rgba(255,255,255,0.1)">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
         <div class="user-avatar" id="userAvatarMenu">U</div>
         <div><div id="userName" style="font-size:13px;font-weight:600;color:white"></div><div id="userRole" style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:capitalize"></div></div>
       </div>
-      <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center" onclick="logout()"> Sign Out</button>
+      <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center" onclick="logout()">Sign Out</button>
     </div>
   </aside>
 
@@ -114,7 +186,7 @@
       <div class="topbar-title" id="pageTitle">Dashboard</div>
       <div class="topbar-actions">
         <button class="topbar-btn" id="notifBtn" onclick="toggleNotifPanel()" title="Notifications">
-          &#128276; <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+          🔔 <span class="notif-badge" id="notifBadge" style="display:none">0</span>
         </button>
         <div class="user-avatar" id="userAvatar" onclick="navigate('settings')" title="Settings">U</div>
       </div>
@@ -123,7 +195,7 @@
     <!-- NOTIFICATION PANEL -->
     <div class="notif-panel" id="notifPanel">
       <div class="notif-panel-header">
-        <h3> Notifications</h3>
+        <h3>🔔 Notifications</h3>
         <button class="btn btn-sm btn-outline" onclick="markAllRead()">Mark all read</button>
       </div>
       <div class="notif-list" id="notifPanelList"></div>
@@ -136,7 +208,7 @@
       <div class="page active" id="page-dashboard">
         <div class="section-header">
           <div><h2>Dashboard</h2><p>Overview of your farm activities</p></div>
-          <button class="btn btn-outline" onclick="loadDashboard()">Refresh</button>
+          <button class="btn btn-primary" onclick="loadDashboard()">Refresh</button>
         </div>
         <div id="dashboardContent"><div class="loading"><div class="spinner"></div> Loading...</div></div>
       </div>
@@ -145,7 +217,7 @@
       <div class="page" id="page-farms">
         <div class="section-header">
           <div><h2>Farm Registration</h2><p>Manage your registered farms</p></div>
-          <button class="btn btn-primary" onclick="openAddFarmModal()"> Add Farm</button>
+          <button class="btn btn-primary" onclick="openAddFarmModal()">Add Farm</button>
         </div>
         <div class="card">
           <div class="card-body">
@@ -163,7 +235,7 @@
       <div class="page" id="page-flocks">
         <div class="section-header">
           <div><h2>Flock Management</h2><p>Track all your poultry batches</p></div>
-          <button class="btn btn-primary" onclick="openAddBatchModal()"> Add Batch</button>
+          <button class="btn btn-primary" onclick="openAddBatchModal()">Add Batch</button>
         </div>
         <div id="flockSummary" style="margin-bottom:20px"></div>
         <div class="card">
@@ -194,7 +266,7 @@
       <div class="page" id="page-feeding">
         <div class="section-header">
           <div><h2>Feeding Management</h2><p>Track feed consumption and schedules</p></div>
-          <button class="btn btn-primary" onclick="openAddFeedModal()"> Record Feeding</button>
+          <button class="btn btn-primary" onclick="openAddFeedModal()">Record Feeding</button>
         </div>
         <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
           <div class="summary-card" style="flex:1;min-width:180px">
@@ -220,7 +292,7 @@
         </div>
         <div id="feedSchedulesTab" class="tab-panel">
           <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
-            <button class="btn btn-primary" onclick="openAddScheduleModal()"> Add Schedule</button>
+            <button class="btn btn-primary" onclick="openAddScheduleModal()">Add Schedule</button>
           </div>
           <div class="card"><div class="card-body"><div class="table-wrapper">
             <table>
@@ -232,14 +304,14 @@
         <div id="fcrTab" class="tab-panel">
           <div class="card"><div class="card-body">
             <h4 style="margin-bottom:16px">Feed Conversion Ratio (FCR) Calculator</h4>
-            <p style="color:var(--grey-600);margin-bottom:16px;font-size:13px">FCR = Total Feed Used ÷ Total Weight Gained. Lower FCR means better feed efficiency.</p>
+            <p style="color:var(--grey-600);margin-bottom:16px;font-size:13px">FCR = Total Feed Used  Total Weight Gained. Lower FCR means better feed efficiency.</p>
             <div class="form-grid">
               <div class="form-group">
                 <label class="form-label">Select Batch</label>
                 <select class="form-control batch-select" id="fcrBatchSelect"></select>
               </div>
             </div>
-            <button class="btn btn-primary" onclick="calculateFCR()"> Calculate FCR</button>
+            <button class="btn btn-primary" onclick="calculateFCR()">Calculate FCR</button>
             <div id="fcrResult" style="margin-top:16px"></div>
           </div></div>
         </div>
@@ -250,9 +322,9 @@
         <div class="section-header">
           <div><h2>Health &amp; Vaccination</h2><p>Monitor flock health and vaccination schedules</p></div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-outline" onclick="showVaccinationTemplates()"> Templates</button>
-            <button class="btn btn-outline" onclick="openAddVaccinationModal()"> Add Vaccination</button>
-            <button class="btn btn-primary" onclick="openAddHealthModal()"> Health Record</button>
+            <button class="btn btn-primary" onclick="showVaccinationTemplates()">Templates</button>
+            <button class="btn btn-primary" onclick="openAddVaccinationModal()">Add Vaccination</button>
+            <button class="btn btn-primary" onclick="openAddHealthModal()">Health Record</button>
           </div>
         </div>
         <div class="tabs">
@@ -286,12 +358,12 @@
       <div class="page" id="page-eggs">
         <div class="section-header">
           <div><h2>Egg Production</h2><p>Track daily egg collection and stock</p></div>
-          <button class="btn btn-primary" onclick="openAddEggModal()"> Record Production</button>
+          <button class="btn btn-primary" onclick="openAddEggModal()">Record Production</button>
         </div>
         <div style="margin-bottom:16px;display:flex;gap:8px">
-          <button class="btn btn-outline egg-period-btn" onclick="filterEggsByPeriod('week')">This Week</button>
+          <button class="btn btn-primary egg-period-btn" onclick="filterEggsByPeriod('week')">This Week</button>
           <button class="btn btn-primary egg-period-btn" onclick="filterEggsByPeriod('month')">This Month</button>
-          <button class="btn btn-outline egg-period-btn" onclick="filterEggsByPeriod('year')">This Year</button>
+          <button class="btn btn-primary egg-period-btn" onclick="filterEggsByPeriod('year')">This Year</button>
         </div>
         <div id="eggSummaryCards" style="margin-bottom:20px"></div>
         <div class="card" style="margin-bottom:20px">
@@ -313,7 +385,7 @@
       <div class="page" id="page-inventory">
         <div class="section-header">
           <div><h2>Inventory Management</h2><p>Track farm supplies and stock levels</p></div>
-          <button class="btn btn-primary" onclick="openAddInventoryModal()"> Add Item</button>
+          <button class="btn btn-primary" onclick="openAddInventoryModal()">Add Item</button>
         </div>
         <div id="inventoryAlerts" style="margin-bottom:16px"></div>
         <div class="card">
@@ -347,7 +419,7 @@
       <div class="page" id="page-sales">
         <div class="section-header">
           <div><h2>Sales &amp; Customers</h2><p>Manage sales records and customer information</p></div>
-          <button class="btn btn-primary" onclick="openNewSaleModal()"> New Sale</button>
+          <button class="btn btn-primary" onclick="openNewSaleModal()">New Sale</button>
         </div>
         <div id="salesSummaryCards" style="margin-bottom:20px"></div>
         <div class="tabs">
@@ -367,7 +439,7 @@
         </div>
         <div id="customersTab" class="tab-panel">
           <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
-            <button class="btn btn-primary" onclick="openAddCustomerModal()"> Add Customer</button>
+            <button class="btn btn-primary" onclick="openAddCustomerModal()">Add Customer</button>
           </div>
           <div class="card"><div class="card-body"><div class="table-wrapper">
             <table>
@@ -383,8 +455,8 @@
         <div class="section-header">
           <div><h2>Expenses &amp; Finances</h2><p>Track income, expenses and profitability</p></div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-outline" onclick="openAddIncomeModal()"> Add Income</button>
-            <button class="btn btn-primary" onclick="openAddExpenseModal()"> Add Expense</button>
+            <button class="btn btn-primary" onclick="openAddIncomeModal()">Add Income</button>
+            <button class="btn btn-primary" onclick="openAddExpenseModal()">Add Expense</button>
           </div>
         </div>
         <div id="financeSummaryCards" style="margin-bottom:20px"></div>
@@ -397,8 +469,8 @@
             <label class="form-label">To</label>
             <input type="date" class="form-control" id="finEndDate" style="width:160px">
           </div>
-          <button class="btn btn-outline" onclick="filterFinances()"> Filter</button>
-          <button class="btn btn-secondary" onclick="loadExpenses()"> Reset</button>
+          <button class="btn btn-primary" onclick="filterFinances()">Filter</button>
+          <button class="btn btn-primary" onclick="loadExpenses()">Reset</button>
         </div>
         <div class="charts-grid" style="margin-bottom:20px">
           <div class="card"><div class="card-header"><h3> Monthly Income vs Expenses</h3></div>
@@ -433,8 +505,8 @@
         <div class="section-header">
           <div><h2>Reports &amp; Analytics</h2><p>Generate detailed farm performance reports</p></div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-outline" onclick="printReport()"> Print</button>
-            <button class="btn btn-outline" onclick="exportCSV()"> Export CSV</button>
+            <button class="btn btn-primary" onclick="printReport()">Print</button>
+            <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
           </div>
         </div>
         <div class="card" style="margin-bottom:20px">
@@ -468,7 +540,7 @@
                 <input type="date" class="form-control" id="reportEndDate">
               </div>
             </div>
-            <button class="btn btn-primary" onclick="generateReport()"> Generate Report</button>
+            <button class="btn btn-primary" onclick="generateReport()">Generate Report</button>
           </div>
         </div>
         <div id="reportOutput"></div>
@@ -479,8 +551,8 @@
         <div class="section-header">
           <div><h2>Notifications &amp; Reminders</h2><p>Stay on top of important farm activities</p></div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-outline" onclick="markAllRead()"> Mark All Read</button>
-            <button class="btn btn-primary" onclick="openAddReminderModal()"> Add Reminder</button>
+            <button class="btn btn-primary" onclick="markAllRead()">Mark All Read</button>
+            <button class="btn btn-primary" onclick="openAddReminderModal()">Add Reminder</button>
           </div>
         </div>
         <div class="card">
@@ -502,6 +574,16 @@
         </div>
         <div id="profileTab" class="tab-panel active">
           <div class="card"><div class="card-body" style="max-width:500px">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+              <div id="profileAvatarPreview" style="width:72px;height:72px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0"></div>
+              <div>
+                <label class="btn btn-primary btn-sm" style="cursor:pointer;margin-bottom:4px">
+                  Change Photo
+                  <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+                </label>
+                <p style="font-size:11px;color:var(--grey-600);margin:0">Max 2MB. JPG, PNG, GIF.</p>
+              </div>
+            </div>
             <div class="form-group">
               <label class="form-label">Full Name</label>
               <input type="text" class="form-control" id="settingName">
@@ -522,7 +604,7 @@
               <label class="form-label">Currency</label>
               <select class="form-control" style="max-width:200px"><option value="KES">KSh (KES) - Kenyan Shilling</option></select>
             </div>
-            <button class="btn btn-primary" onclick="saveProfile()"> Save Profile</button>
+            <button class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
           </div></div>
         </div>
         <div id="securityTab" class="tab-panel">
@@ -540,7 +622,7 @@
               <label class="form-label">Confirm New Password</label>
               <input type="password" class="form-control" id="confirmPassword">
             </div>
-            <button class="btn btn-primary" onclick="changePassword()"> Change Password</button>
+            <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
           </div></div>
         </div>
         <div id="usersTab" class="tab-panel">
@@ -548,7 +630,7 @@
             <h4 style="margin-bottom:16px">System Users</h4>
             <div class="table-wrapper">
               <table>
-                <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+                <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Joined</th></tr></thead>
                 <tbody id="usersTableBody"><tr><td colspan="6" style="text-align:center;color:var(--grey-500)">Loading users...</td></tr></tbody>
               </table>
             </div>
@@ -621,7 +703,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveFarm()"> Save Farm</button>
+      <button class="btn btn-primary" onclick="saveFarm()">Save Farm</button>
     </div>
   </div>
 </div>
@@ -689,7 +771,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveBatch()"> Save Batch</button>
+      <button class="btn btn-primary" onclick="saveBatch()">Save Batch</button>
     </div>
   </div>
 </div>
@@ -746,7 +828,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-danger" onclick="saveMortality()"> Record Deaths</button>
+      <button class="btn btn-danger" onclick="saveMortality()">Record Deaths</button>
     </div>
   </div>
 </div>
@@ -798,7 +880,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveFeedRecord()"> Save Record</button>
+      <button class="btn btn-primary" onclick="saveFeedRecord()">Save Record</button>
     </div>
   </div>
 </div>
@@ -850,7 +932,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveSchedule()"> Save Schedule</button>
+      <button class="btn btn-primary" onclick="saveSchedule()">Save Schedule</button>
     </div>
   </div>
 </div>
@@ -926,7 +1008,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveHealthRecord()"> Save Record</button>
+      <button class="btn btn-primary" onclick="saveHealthRecord()">Save Record</button>
     </div>
   </div>
 </div>
@@ -997,7 +1079,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveVaccination()"> Save Vaccination</button>
+      <button class="btn btn-primary" onclick="saveVaccination()">Save Vaccination</button>
     </div>
   </div>
 </div>
@@ -1095,7 +1177,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveEggRecord()"> Save Record</button>
+      <button class="btn btn-primary" onclick="saveEggRecord()">Save Record</button>
     </div>
   </div>
 </div>
@@ -1165,7 +1247,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveInventoryItem()"> Save Item</button>
+      <button class="btn btn-primary" onclick="saveInventoryItem()">Save Item</button>
     </div>
   </div>
 </div>
@@ -1209,7 +1291,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveTransaction()"> Save Transaction</button>
+      <button class="btn btn-primary" onclick="saveTransaction()">Save Transaction</button>
     </div>
   </div>
 </div>
@@ -1259,7 +1341,7 @@
       <div style="margin-top:16px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <h4>Sale Items</h4>
-          <button class="btn btn-outline btn-sm" onclick="addSaleItem()"> Add Item</button>
+          <button class="btn btn-outline btn-sm" onclick="addSaleItem()">Add Item</button>
         </div>
         <div id="saleItemsContainer"></div>
         <div style="text-align:right;margin-top:12px;font-size:18px;font-weight:700;color:var(--primary)">
@@ -1269,7 +1351,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveSale()"> Record Sale</button>
+      <button class="btn btn-primary" onclick="saveSale()">Record Sale</button>
     </div>
   </div>
 </div>
@@ -1284,7 +1366,7 @@
     <div class="modal-body" id="receiptContent"></div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Close</button>
-      <button class="btn btn-primary" onclick="printReceipt()"> Print Receipt</button>
+      <button class="btn btn-primary" onclick="printReceipt()">Print Receipt</button>
     </div>
   </div>
 </div>
@@ -1331,7 +1413,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveCustomer()"> Save Customer</button>
+      <button class="btn btn-primary" onclick="saveCustomer()">Save Customer</button>
     </div>
   </div>
 </div>
@@ -1398,7 +1480,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveExpense()"> Save Expense</button>
+      <button class="btn btn-primary" onclick="saveExpense()">Save Expense</button>
     </div>
   </div>
 </div>
@@ -1454,7 +1536,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveIncome()"> Save Income</button>
+      <button class="btn btn-primary" onclick="saveIncome()">Save Income</button>
     </div>
   </div>
 </div>
@@ -1503,7 +1585,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveReminder()"> Save Reminder</button>
+      <button class="btn btn-primary" onclick="saveReminder()">Save Reminder</button>
     </div>
   </div>
 </div>
@@ -1526,14 +1608,12 @@
 <script src="js/settings.js"></script>
 <script src="js/main.js"></script>
 <script>
-// Tab switcher utility
 function switchTab(groupId, tabId, btn) {
   const panels = document.querySelectorAll(`#page-${getCurrentPage()} .tab-panel`);
   panels.forEach(p => p.classList.remove('active'));
   document.getElementById(tabId)?.classList.add('active');
   btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  // Load schedules when switching to that tab
   if (tabId === 'feedSchedulesTab') loadFeedSchedules();
 }
 </script>

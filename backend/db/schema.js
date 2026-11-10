@@ -49,7 +49,7 @@ async function initSchema() {
       id INTEGER PRIMARY KEY AUTOINCREMENT, uuid TEXT UNIQUE NOT NULL,
       name TEXT NOT NULL, email TEXT UNIQUE NOT NULL, password TEXT NOT NULL,
       phone TEXT, role TEXT NOT NULL DEFAULT 'farm_worker', farm_id INTEGER,
-      is_active INTEGER DEFAULT 1, created_at TEXT DEFAULT (datetime('now')),
+      avatar TEXT, is_active INTEGER DEFAULT 1, created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     );
     CREATE TABLE IF NOT EXISTS farms (
@@ -211,7 +211,9 @@ async function initSchema() {
     const ex = await db.get('SELECT id FROM feed_types WHERE name = ?', [name]);
     if (!ex) await db.run('INSERT INTO feed_types (name, category, description) VALUES (?,?,?)', [name, cat, desc]);
   }
-  console.log('✅ Database ready');
+  // Migrate: add avatar column if missing
+  try { await db.run('ALTER TABLE users ADD COLUMN avatar TEXT'); } catch {}
+  console.log('Database ready');
 }
 
 initSchema().catch(err => console.error('DB init error:', err));

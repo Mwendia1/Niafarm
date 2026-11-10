@@ -46,7 +46,7 @@ router.post('/change-password', authenticateToken, async (req, res) => {
 
 router.get('/profile', authenticateToken, async (req, res) => {
   try {
-    const user = await db.get('SELECT id, uuid, name, email, phone, role, created_at FROM users WHERE id = ?', [req.user.id]);
+    const user = await db.get('SELECT id, uuid, name, email, phone, role, avatar, created_at FROM users WHERE id = ?', [req.user.id]);
     res.json(user);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -56,6 +56,25 @@ router.put('/profile', authenticateToken, async (req, res) => {
     const { name, phone } = req.body;
     await db.run("UPDATE users SET name = ?, phone = ?, updated_at = datetime('now') WHERE id = ?", [name, phone, req.user.id]);
     res.json({ message: 'Profile updated' });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+const multer = require('multer');
+const upload = multer({
+  dest: require('path').join(__dirname, '../uploads/avatars'),
+  limits: { fileSize: 2 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith('image/')) return cb(new Error('Images only'));
+    cb(null, true);
+  }
+});
+
+router.post('/avatar', authenticateToken, upload.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    await db.run("UPDATE users SET avatar = ?, updated_at = datetime('now') WHERE id = ?", [avatarUrl, req.user.id]);
+    res.json({ avatar: avatarUrl });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

@@ -45,7 +45,7 @@ function renderSalesTable(sales) {
       <td>${s.payment_method}</td>
       <td><span class="badge ${s.payment_status === 'paid' ? 'badge-green' : 'badge-red'}">${s.payment_status}</span></td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="viewSaleReceipt('${s.uuid}')"> Receipt</button>
+        <button class="btn btn-sm btn-primary" onclick="viewSaleReceipt('${s.uuid}')"> Receipt</button>
         ${s.payment_status !== 'paid' ? `<button class="btn btn-sm btn-primary" onclick="markSalePaid('${s.uuid}', ${s.total_amount})"> Mark Paid</button>` : ''}
       </td>
     </tr>
@@ -170,7 +170,7 @@ async function viewSaleReceipt(uuid) {
       <div style="font-family:monospace;padding:20px;border:2px solid var(--grey-300);border-radius:8px">
         <div style="text-align:center;margin-bottom:16px">
           <div style="font-size:24px"></div>
-          <h2 style="color:var(--primary-dark)">${state.currentFarm?.name || 'NiaFarm'}</h2>
+          <h2 style="color:var(--primary-dark)">${state.currentFarm?.name || 'FarmNest'}</h2>
           <p style="font-size:12px;color:var(--grey-600)">SALES RECEIPT</p>
         </div>
         <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:13px">

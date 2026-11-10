@@ -41,7 +41,7 @@ function renderEggTable(records) {
       <td>${fmt.date(r.date)}</td>
       <td>${r.batch_number}</td>
       <td><strong>${fmt.number(r.total_collected)}</strong></td>
-      <td style="color:var(--primary)">${fmt.number(r.good_eggs)}</td>
+      <td style="color:#111111">${fmt.number(r.good_eggs)}</td>
       <td style="color:var(--danger)">${fmt.number(r.broken_eggs)}</td>
       <td style="color:var(--warning)">${fmt.number(r.damaged_eggs)}</td>
       <td>${fmt.number(r.eggs_sold)}</td>

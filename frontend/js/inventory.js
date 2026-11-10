@@ -46,7 +46,7 @@ function renderInventoryTable(items) {
       <td style="color:${isExpiring ? 'var(--danger)' : ''}">${fmt.date(item.expiry_date)}</td>
       <td>${fmt.date(item.purchase_date)}</td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="openTransactionModal('${item.uuid}', '${item.name}')"> Stock</button>
+        <button class="btn btn-sm btn-primary" onclick="openTransactionModal('${item.uuid}', '${item.name}')"> Stock</button>
         <button class="btn btn-sm btn-outline" onclick="editInventoryItem('${item.uuid}')"></button>
         <button class="btn btn-sm btn-danger" onclick="deleteInventoryItem('${item.uuid}', '${item.name}')"></button>
       </td>

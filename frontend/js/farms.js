@@ -24,7 +24,7 @@ function renderFarmsTable(farms) {
       <td>${f.phone || '-'}</td>
       <td>${fmt.date(f.registration_date)}</td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="editFarm('${f.uuid}')"> Edit</button>
+        <button class="btn btn-sm btn-primary" onclick="editFarm('${f.uuid}')"> Edit</button>
         <button class="btn btn-sm btn-danger" onclick="deleteFarm('${f.uuid}', '${f.name}')"></button>
       </td>
     </tr>

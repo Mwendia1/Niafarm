@@ -45,7 +45,7 @@ function renderExpensesTable(expenses) {
       <td><strong>${fmt.currency(e.amount)}</strong></td>
       <td>${e.payment_method}</td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="editExpense('${e.uuid}')"></button>
+        <button class="btn btn-sm btn-primary" onclick="editExpense('${e.uuid}')"></button>
         <button class="btn btn-sm btn-danger" onclick="deleteExpense('${e.uuid}')"></button>
       </td>
     </tr>
@@ -63,7 +63,7 @@ function renderIncomeTable(income) {
       <td>${fmt.date(i.date)}</td>
       <td><span class="badge badge-green">${i.source}</span></td>
       <td>${i.description || '-'}</td>
-      <td><strong style="color:var(--primary)">${fmt.currency(i.amount)}</strong></td>
+      <td><strong style="color:#111111">${fmt.currency(i.amount)}</strong></td>
       <td>${i.payment_method}</td>
     </tr>
   `).join('');

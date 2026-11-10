@@ -177,7 +177,7 @@ function printReport() {
   const content = document.getElementById('printableReport');
   if (!content) { toast.error('Generate a report first'); return; }
   const win = window.open('', '_blank');
-  win.document.write(`<html><head><title>NiaFarm Report</title><style>body{font-family:sans-serif;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#f5f5f5}.badge{padding:2px 8px;border-radius:12px;font-size:11px}.text-profit{color:green}.text-loss{color:red}</style></head><body>${content.outerHTML}</body></html>`);
+  win.document.write(`<html><head><title>FarmNest Report</title><style>body{font-family:sans-serif;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#f5f5f5}.badge{padding:2px 8px;border-radius:12px;font-size:11px}.text-profit{color:green}.text-loss{color:red}</style></head><body>${content.outerHTML}</body></html>`);
   win.document.close();
   win.print();
 }
@@ -188,5 +188,5 @@ function exportCSV() {
   const rows = Array.from(table.querySelectorAll('tr'));
   const csv = rows.map(row => Array.from(row.querySelectorAll('th,td')).map(cell => `"${cell.textContent.trim()}"`).join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'niafarm_report.csv'; a.click();
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'farmnest_report.csv'; a.click();
 }

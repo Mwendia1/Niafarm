@@ -12,6 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // API Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -33,6 +34,6 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`\n🐔 NiaFarm Server running at http://localhost:${PORT}`);
+  console.log(`\n🐔 FarmNest Server running at http://localhost:${PORT}`);
   console.log(`   Open your browser and go to http://localhost:${PORT}\n`);
 });

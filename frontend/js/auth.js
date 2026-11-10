@@ -22,9 +22,18 @@ function showAuthPage(page) {
 async function showApp(user) {
   document.getElementById('authSection').style.display = 'none';
   document.getElementById('app').classList.add('visible');
-  const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  document.getElementById('userAvatar').textContent = initials;
-  document.getElementById('userAvatarMenu').textContent = initials;
+  const avatarEl = document.getElementById('userAvatar');
+  const avatarMenuEl = document.getElementById('userAvatarMenu');
+  const avatarSrc = user.avatar ? `http://localhost:3000${user.avatar}` : null;
+  if (avatarSrc) {
+    const img = `<img src="${avatarSrc}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    if (avatarEl) avatarEl.innerHTML = img;
+    if (avatarMenuEl) avatarMenuEl.innerHTML = img;
+  } else {
+    const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    if (avatarEl) avatarEl.textContent = initials;
+    if (avatarMenuEl) avatarMenuEl.textContent = initials;
+  }
   document.getElementById('userName').textContent = user.name;
   document.getElementById('userRole').textContent = user.role.replace(/_/g, ' ');
   const farms = await loadFarms();
@@ -48,8 +57,11 @@ document.getElementById('loginFormEl').addEventListener('submit', async (e) => {
       password: document.getElementById('loginPassword').value
     });
     localStorage.setItem('nf_token', data.token);
-    state.setUser(data.user);
-    showApp(data.user);
+    // Fetch full profile to get avatar
+    const profile = await fetch('http://localhost:3000/api/auth/profile', { headers: { 'Authorization': `Bearer ${data.token}` } }).then(r => r.json());
+    const user = { ...data.user, avatar: profile.avatar };
+    state.setUser(user);
+    showApp(user);
   } catch (err) {
     document.getElementById('loginError').textContent = err.message;
     document.getElementById('loginError').style.display = 'block';
@@ -72,7 +84,7 @@ document.getElementById('registerFormEl').addEventListener('submit', async (e) =
     localStorage.setItem('nf_token', data.token);
     state.setUser(data.user);
     showApp(data.user);
-    toast.success('Account created! Welcome to NiaFarm ');
+    toast.success('Account created! Welcome to FarmNest ');
   } catch (err) {
     document.getElementById('registerError').textContent = err.message;
     document.getElementById('registerError').style.display = 'block';
