@@ -1,0 +1,5 @@
+node_modules/
+backend/db/niafarm.db
+backend/uploads/avatars/*
+!backend/uploads/avatars/.gitkeep
+.env

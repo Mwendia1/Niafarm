@@ -1,5 +1,5 @@
 // ===== API CLIENT =====
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = '/api';
 
 const api = {
   token: () => localStorage.getItem('nf_token'),

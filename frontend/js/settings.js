@@ -14,7 +14,7 @@ async function loadSettings() {
 
 function updateAvatarDisplay(user) {
   const preview = document.getElementById('profileAvatarPreview');
-  const avatarSrc = user.avatar ? `http://localhost:3000${user.avatar}` : null;
+  const avatarSrc = user.avatar ? user.avatar : null;
   if (!preview) return;
   if (avatarSrc) {
     preview.innerHTML = `<img src="${avatarSrc}" style="width:100%;height:100%;object-fit:cover">`;
@@ -40,7 +40,7 @@ async function uploadAvatar(input) {
   const formData = new FormData();
   formData.append('avatar', input.files[0]);
   try {
-    const res = await fetch('http://localhost:3000/api/auth/avatar', {
+    const res = await fetch('/api/auth/avatar', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${localStorage.getItem('nf_token')}` },
       body: formData
