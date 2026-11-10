@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NiaFarm - Farm Staff Portal</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/user.css">
+</head>
+<body>
+
+<div class="offline-bar">You are offline. Records will sync when connection is restored.</div>
+
+<!-- AUTH -->
+<div id="authSection" class="auth-page">
+  <div>
+    <div id="loginForm" class="auth-card">
+      <div class="auth-logo">
+        <div style="font-size:40px;font-weight:900;color:var(--primary-dark);letter-spacing:-2px">NF</div>
+        <h1>NiaFarm</h1>
+        <p>Farm Staff Portal</p>
+      </div>
+      <form id="loginFormEl">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="Your password" required>
+        </div>
+        <div id="loginError" class="alert alert-error" style="display:none"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px">Sign In</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- USER APP -->
+<div id="userApp" style="display:none">
+
+  <!-- TOPBAR -->
+  <header class="u-topbar">
+    <div class="u-topbar-left">
+      <div class="u-brand">NiaFarm</div>
+      <div class="u-farm-name" id="uFarmName">Loading farm...</div>
+    </div>
+    <div class="u-topbar-right">
+      <button class="u-notif-btn" id="uNotifBtn" onclick="uToggleNotifPanel()">
+        Notifications
+        <span class="u-notif-count" id="uNotifCount" style="display:none">0</span>
+      </button>
+      <div class="u-user-info">
+        <div class="u-avatar" id="uAvatar">U</div>
+        <div>
+          <div class="u-user-name" id="uUserName"></div>
+          <div class="u-user-role" id="uUserRole"></div>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="uLogout()">Sign Out</button>
+    </div>
+  </header>
+
+  <!-- NOTIFICATION PANEL -->
+  <div class="u-notif-panel" id="uNotifPanel">
+    <div class="u-notif-panel-header">
+      <strong>Notifications</strong>
+      <button class="btn btn-sm btn-outline" onclick="uMarkAllRead()">Mark all read</button>
+    </div>
+    <div id="uNotifList"></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="u-main">
+
+    <!-- NAV TABS -->
+    <nav class="u-nav">
+      <button class="u-nav-btn active" data-tab="uDashboard" onclick="uSwitchTab('uDashboard', this)">Dashboard</button>
+      <button class="u-nav-btn" data-tab="uFeeding" onclick="uSwitchTab('uFeeding', this)">Feeding</button>
+      <button class="u-nav-btn" data-tab="uHealth" onclick="uSwitchTab('uHealth', this)">Health &amp; Vaccination</button>
+      <button class="u-nav-btn" data-tab="uEggs" onclick="uSwitchTab('uEggs', this)">Egg Production</button>
+      <button class="u-nav-btn" data-tab="uInventory" onclick="uSwitchTab('uInventory', this)">Inventory</button>
+    </nav>
+
+    <div class="u-content">
+
+      <!-- DASHBOARD TAB -->
+      <div class="u-tab active" id="uDashboard">
+        <div class="u-section-header">
+          <h2>Farm Overview</h2>
+          <button class="btn btn-outline btn-sm" onclick="uLoadDashboard()">Refresh</button>
+        </div>
+
+        <!-- QUICK EDIT CARDS -->
+        <div class="u-quick-grid">
+
+          <div class="u-quick-card">
+            <div class="u-quick-label">Total Birds</div>
+            <div class="u-quick-value" id="uTotalBirds">--</div>
+            <div class="u-quick-sub" id="uActiveBatches">-- active batches</div>
+            <button class="u-quick-btn" onclick="uOpenModal('uMortalityModal')">Record Deaths</button>
+          </div>
+
+          <div class="u-quick-card">
+            <div class="u-quick-label">Today's Eggs</div>
+            <div class="u-quick-value" id="uTodayEggs">--</div>
+            <div class="u-quick-sub">Collected today</div>
+            <button class="u-quick-btn" onclick="uOpenModal('uEggQuickModal')">Record Eggs</button>
+          </div>
+
+          <div class="u-quick-card">
+            <div class="u-quick-label">Feed Stock</div>
+            <div class="u-quick-value" id="uFeedStock">-- kg</div>
+            <div class="u-quick-sub" id="uFeedStockSub">Available</div>
+            <button class="u-quick-btn" onclick="uOpenModal('uFeedModal')">Record Feeding</button>
+          </div>
+
+          <div class="u-quick-card u-quick-card-alert" id="uDeathsCard">
+            <div class="u-quick-label">Deaths This Month</div>
+            <div class="u-quick-value" id="uMonthDeaths">--</div>
+            <div class="u-quick-sub">Mortality recorded</div>
+            <button class="u-quick-btn" onclick="uOpenModal('uMortalityModal')">Record Deaths</button>
+          </div>
+
+        </div>
+
+        <!-- ALERTS -->
+        <div id="uAlerts" style="margin-bottom:20px"></div>
+
+        <!-- BATCH STATUS TABLE -->
+        <div class="u-card">
+          <div class="u-card-header">
+            <h3>Active Batches</h3>
+          </div>
+          <div class="u-card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Batch No.</th>
+                    <th>Type</th>
+                    <th>Current Birds</th>
+                    <th>Deaths</th>
+                    <th>Mortality %</th>
+                    <th>Arrival Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="uBatchTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- UPCOMING VACCINATIONS -->
+        <div class="u-card" style="margin-top:20px">
+          <div class="u-card-header"><h3>Upcoming Vaccinations</h3></div>
+          <div class="u-card-body" id="uUpcomingVax"></div>
+        </div>
+
+      </div>
+
+      <!-- FEEDING TAB -->
+      <div class="u-tab" id="uFeeding">
+        <div class="u-section-header">
+          <h2>Feeding Management</h2>
+          <button class="btn btn-primary btn-sm" onclick="uOpenModal('uFeedModal')">Record Feeding</button>
+        </div>
+        <div class="u-card">
+          <div class="u-card-header"><h3>Recent Feed Records</h3></div>
+          <div class="u-card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Date</th><th>Batch</th><th>Feed Type</th><th>Quantity (kg)</th><th>Cost (KSh)</th><th>Notes</th></tr></thead>
+                <tbody id="uFeedTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="u-card" style="margin-top:20px">
+          <div class="u-card-header"><h3>Feeding Schedules</h3></div>
+          <div class="u-card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Batch</th><th>Feed Type</th><th>Quantity</th><th>Frequency</th><th>Time</th></tr></thead>
+                <tbody id="uScheduleTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HEALTH TAB -->
+      <div class="u-tab" id="uHealth">
+        <div class="u-section-header">
+          <h2>Health &amp; Vaccination</h2>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline btn-sm" onclick="uOpenModal('uVacModal')">Add Vaccination</button>
+            <button class="btn btn-primary btn-sm" onclick="uOpenModal('uHealthModal')">Add Health Record</button>
+          </div>
+        </div>
+        <div class="u-card" style="margin-bottom:20px">
+          <div class="u-card-header"><h3>Vaccination Calendar</h3></div>
+          <div class="u-card-body" id="uVaxCalendar"></div>
+        </div>
+        <div class="u-card" style="margin-bottom:20px">
+          <div class="u-card-header"><h3>Vaccination Records</h3></div>
+          <div class="u-card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Batch</th><th>Vaccine</th><th>Date Given</th><th>Next Due</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody id="uVaxTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="u-card">
+          <div class="u-card-header"><h3>Health Records</h3></div>
+          <div class="u-card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Date</th><th>Batch</th><th>Type</th><th>Description</th><th>Medication</th></tr></thead>
+                <tbody id="uHealthTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EGGS TAB -->
+      <div class="u-tab" id="uEggs">
+        <div class="u-section-header">
+          <h2>Egg Production</h2>
+          <button class="btn btn-primary btn-sm" onclick="uOpenModal('uEggModal')">Record Production</button>
+        </div>
+        <div class="u-egg-summary" id="uEggSummary"></div>
+        <div class="u-card">
+          <div class="u-card-header"><h3>Production Records</h3></div>
+          <div class="u-card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Date</th><th>Batch</th><th>Total</th><th>Good</th><th>Broken</th><th>Damaged</th><th>Sold</th></tr></thead>
+                <tbody id="uEggTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INVENTORY TAB -->
+      <div class="u-tab" id="uInventory">
+        <div class="u-section-header">
+          <h2>Inventory</h2>
+        </div>
+        <div id="uInvAlerts" style="margin-bottom:16px"></div>
+        <div class="u-card">
+          <div class="u-card-header"><h3>Stock Levels</h3></div>
+          <div class="u-card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Item</th><th>Category</th><th>Stock</th><th>Unit</th><th>Status</th></tr></thead>
+                <tbody id="uInvTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- MORTALITY MODAL -->
+<div class="modal-overlay" id="uMortalityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Record Bird Deaths</h3>
+      <button class="modal-close" onclick="uCloseModal('uMortalityModal')">X</button>
+    </div>
+    <div class="modal-body">
+      <form id="uMortalityForm">
+        <div class="form-group">
+          <label class="form-label">Batch <span class="required">*</span></label>
+          <select name="batch_id" class="form-control u-batch-select" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date <span class="required">*</span></label>
+          <input type="date" name="date" id="uMortDate" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Number of Deaths <span class="required">*</span></label>
+          <input type="number" name="count" class="form-control" placeholder="0" min="1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cause</label>
+          <select name="cause" class="form-control">
+            <option value="">Unknown</option>
+            <option value="Disease">Disease</option>
+            <option value="Injury">Injury</option>
+            <option value="Predator">Predator</option>
+            <option value="Starvation">Starvation</option>
+            <option value="Heat Stress">Heat Stress</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="uCloseModal('uMortalityModal')">Cancel</button>
+      <button class="btn btn-danger" onclick="uSaveMortality()">Save Deaths</button>
+    </div>
+  </div>
+</div>
+
+<!-- EGG QUICK MODAL (from dashboard) -->
+<div class="modal-overlay" id="uEggQuickModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Quick Egg Record</h3>
+      <button class="modal-close" onclick="uCloseModal('uEggQuickModal')">X</button>
+    </div>
+    <div class="modal-body">
+      <form id="uEggQuickForm">
+        <div class="form-group">
+          <label class="form-label">Batch <span class="required">*</span></label>
+          <select name="batch_id" class="form-control u-batch-select" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date <span class="required">*</span></label>
+          <input type="date" name="date" id="uEggQuickDate" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Total Collected <span class="required">*</span></label>
+          <input type="number" name="total_collected" id="uEggQTotal" class="form-control" placeholder="0" min="0" required>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Broken</label>
+            <input type="number" name="broken_eggs" id="uEggQBroken" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Damaged</label>
+            <input type="number" name="damaged_eggs" id="uEggQDamaged" class="form-control" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Good Eggs (auto)</label>
+          <input type="number" name="good_eggs" id="uEggQGood" class="form-control" readonly style="background:var(--grey-100)">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="uCloseModal('uEggQuickModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="uSaveEggQuick()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEED MODAL -->
+<div class="modal-overlay" id="uFeedModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Record Feeding</h3>
+      <button class="modal-close" onclick="uCloseModal('uFeedModal')">X</button>
+    </div>
+    <div class="modal-body">
+      <form id="uFeedForm">
+        <div class="form-group">
+          <label class="form-label">Batch <span class="required">*</span></label>
+          <select name="batch_id" class="form-control u-batch-select" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Feed Type <span class="required">*</span></label>
+          <select name="feed_name" class="form-control" required>
+            <option value="">Select feed</option>
+            <option value="Chick Starter">Chick Starter</option>
+            <option value="Grower Feed">Grower Feed</option>
+            <option value="Broiler Finisher">Broiler Finisher</option>
+            <option value="Layer Mash">Layer Mash</option>
+            <option value="Kienyeji Feed">Kienyeji Feed</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Quantity (kg) <span class="required">*</span></label>
+            <input type="number" name="quantity_kg" class="form-control" placeholder="0" min="0" step="0.1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cost (KSh)</label>
+            <input type="number" name="cost" class="form-control" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date <span class="required">*</span></label>
+          <input type="date" name="date" id="uFeedDate" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="uCloseModal('uFeedModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="uSaveFeed()">Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- FULL EGG MODAL -->
+<div class="modal-overlay" id="uEggModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>Record Egg Production</h3>
+      <button class="modal-close" onclick="uCloseModal('uEggModal')">X</button>
+    </div>
+    <div class="modal-body">
+      <form id="uEggForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Batch <span class="required">*</span></label>
+            <select name="batch_id" class="form-control u-batch-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date <span class="required">*</span></label>
+            <input type="date" name="date" id="uEggDate" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Collected</label>
+            <input type="number" name="total_collected" id="uEggTotal" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Good Eggs (auto)</label>
+            <input type="number" name="good_eggs" id="uEggGood" class="form-control" readonly style="background:var(--grey-100)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Broken Eggs</label>
+            <input type="number" name="broken_eggs" id="uEggBroken" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Damaged Eggs</label>
+            <input type="number" name="damaged_eggs" id="uEggDamaged" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Small</label>
+            <input type="number" name="small_eggs" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Medium</label>
+            <input type="number" name="medium_eggs" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Large</label>
+            <input type="number" name="large_eggs" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Extra Large</label>
+            <input type="number" name="xlarge_eggs" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Eggs Sold Today</label>
+            <input type="number" name="eggs_sold" class="form-control" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="uCloseModal('uEggModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="uSaveEgg()">Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEALTH MODAL -->
+<div class="modal-overlay" id="uHealthModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>Add Health Record</h3>
+      <button class="modal-close" onclick="uCloseModal('uHealthModal')">X</button>
+    </div>
+    <div class="modal-body">
+      <form id="uHealthForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Batch <span class="required">*</span></label>
+            <select name="batch_id" class="form-control u-batch-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date <span class="required">*</span></label>
+            <input type="date" name="date" id="uHealthDate" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type <span class="required">*</span></label>
+            <select name="type" class="form-control" required>
+              <option value="">Select type</option>
+              <option value="disease">Disease</option>
+              <option value="treatment">Treatment</option>
+              <option value="checkup">Checkup</option>
+              <option value="injury">Injury</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Medication</label>
+            <input type="text" name="medication" class="form-control" placeholder="Medicine name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dosage</label>
+            <input type="text" name="dosage" class="form-control" placeholder="e.g. 1ml per litre">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Vet Name</label>
+            <input type="text" name="vet_name" class="form-control" placeholder="Veterinarian name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description / Symptoms</label>
+          <textarea name="description" class="form-control" rows="2" placeholder="Describe symptoms..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Treatment Given</label>
+          <textarea name="treatment" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="uCloseModal('uHealthModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="uSaveHealth()">Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- VACCINATION MODAL -->
+<div class="modal-overlay" id="uVacModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>Add Vaccination Record</h3>
+      <button class="modal-close" onclick="uCloseModal('uVacModal')">X</button>
+    </div>
+    <div class="modal-body">
+      <form id="uVacForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Batch <span class="required">*</span></label>
+            <select name="batch_id" class="form-control u-batch-select" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Vaccine Name <span class="required">*</span></label>
+            <input type="text" name="vaccine_name" class="form-control" placeholder="e.g. Newcastle Disease" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date Given</label>
+            <input type="date" name="date_given" id="uVacDate" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Next Due Date</label>
+            <input type="date" name="next_due_date" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Method</label>
+            <select name="method" class="form-control">
+              <option value="">Select method</option>
+              <option value="Eye drop">Eye Drop</option>
+              <option value="Drinking water">Drinking Water</option>
+              <option value="Injection">Injection</option>
+              <option value="Wing web stab">Wing Web Stab</option>
+              <option value="Spray">Spray</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Administered By</label>
+            <input type="text" name="administered_by" class="form-control" placeholder="Name or vet">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-control">
+              <option value="completed">Completed</option>
+              <option value="scheduled">Scheduled</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea name="notes" class="form-control" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="uCloseModal('uVacModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="uSaveVac()">Save Vaccination</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="js/app.js"></script>
+<script src="js/user.js"></script>
+</body>
+</html>

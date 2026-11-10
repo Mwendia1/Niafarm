@@ -1,0 +1,229 @@
+/* ===== USER DASHBOARD STYLES ===== */
+
+/* Topbar */
+.u-topbar {
+  height: 60px;
+  background: var(--primary-dark);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-md);
+}
+
+.u-topbar-left { display: flex; align-items: center; gap: 16px; }
+.u-brand { font-size: 20px; font-weight: 800; color: white; letter-spacing: -0.5px; }
+.u-farm-name { font-size: 13px; color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; }
+.u-topbar-right { display: flex; align-items: center; gap: 12px; }
+
+.u-notif-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 13px;
+  position: relative;
+  transition: background var(--transition);
+}
+.u-notif-btn:hover { background: rgba(255,255,255,0.2); }
+
+.u-notif-count {
+  position: absolute;
+  top: -6px; right: -6px;
+  background: var(--danger);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.u-user-info { display: flex; align-items: center; gap: 8px; }
+.u-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px;
+}
+.u-user-name { font-size: 13px; font-weight: 600; color: white; }
+.u-user-role { font-size: 11px; color: rgba(255,255,255,0.6); text-transform: capitalize; }
+
+/* Notification panel */
+.u-notif-panel {
+  position: fixed;
+  top: 60px; right: 0;
+  width: 340px;
+  height: calc(100vh - 60px);
+  background: white;
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  transform: translateX(100%);
+  transition: transform var(--transition);
+  display: flex; flex-direction: column;
+}
+.u-notif-panel.open { transform: translateX(0); }
+.u-notif-panel-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--grey-200);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+/* Nav */
+.u-nav {
+  background: white;
+  border-bottom: 2px solid var(--grey-200);
+  display: flex;
+  padding: 0 24px;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.u-nav-btn {
+  background: none;
+  border: none;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--grey-600);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+.u-nav-btn:hover { color: var(--primary); }
+.u-nav-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+
+/* Main layout */
+.u-main { min-height: calc(100vh - 60px); background: var(--grey-100); }
+.u-content { padding: 24px; }
+.u-tab { display: none; }
+.u-tab.active { display: block; }
+
+/* Section header */
+.u-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.u-section-header h2 { font-size: 20px; font-weight: 700; color: var(--grey-900); }
+
+/* Quick edit cards */
+.u-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.u-quick-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--grey-200);
+  border-left: 4px solid var(--primary);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.u-quick-card-alert { border-left-color: var(--danger); }
+
+.u-quick-label { font-size: 12px; font-weight: 600; color: var(--grey-500); text-transform: uppercase; letter-spacing: 0.5px; }
+.u-quick-value { font-size: 28px; font-weight: 800; color: var(--grey-900); line-height: 1; }
+.u-quick-sub { font-size: 12px; color: var(--grey-500); }
+
+.u-quick-btn {
+  margin-top: 8px;
+  background: var(--primary-bg);
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-light);
+  padding: 7px 12px;
+  border-radius: var(--radius);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+.u-quick-btn:hover { background: var(--primary); color: white; }
+.u-quick-card-alert .u-quick-btn { background: var(--danger-light); color: var(--danger); border-color: #ef9a9a; }
+.u-quick-card-alert .u-quick-btn:hover { background: var(--danger); color: white; }
+
+/* Card */
+.u-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--grey-200);
+}
+.u-card-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--grey-200);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.u-card-header h3 { font-size: 15px; font-weight: 600; }
+.u-card-body { padding: 16px 20px; }
+
+/* Egg summary */
+.u-egg-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.u-egg-stat {
+  background: white;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--grey-200);
+  text-align: center;
+}
+.u-egg-stat .label { font-size: 11px; color: var(--grey-500); text-transform: uppercase; font-weight: 600; }
+.u-egg-stat .value { font-size: 22px; font-weight: 800; color: var(--grey-900); margin-top: 4px; }
+
+/* Vaccination calendar */
+.u-vax-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--grey-200);
+  margin-bottom: 8px;
+}
+.u-vax-date {
+  width: 50px; height: 50px;
+  border-radius: var(--radius);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  color: white; flex-shrink: 0;
+}
+.u-vax-info { flex: 1; }
+.u-vax-name { font-weight: 600; font-size: 14px; }
+.u-vax-batch { font-size: 12px; color: var(--grey-600); }
+.u-vax-days { font-size: 12px; font-weight: 700; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .u-topbar { padding: 0 16px; }
+  .u-topbar-right .u-user-info { display: none; }
+  .u-content { padding: 16px; }
+  .u-quick-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 480px) {
+  .u-quick-grid { grid-template-columns: 1fr; }
+  .u-brand { font-size: 16px; }
+}

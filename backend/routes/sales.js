@@ -74,8 +74,10 @@ router.post('/', async (req, res) => {
     if (!farm_id || !items || !items.length) return res.status(400).json({ error: 'farm_id and items required' });
     const total = items.reduce((s, i) => s + (i.quantity * i.unit_price), 0);
     const uuid = uuidv4();
-    const result = await db.run('INSERT INTO sales (uuid, farm_id, customer_id, customer_name, sale_date, total_amount, amount_paid, payment_method, payment_status, notes, recorded_by) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-      [uuid, farm_id, customer_id || null, customer_name || null, sale_date, total, payment_status === 'paid' ? total : 0, payment_method || 'cash', payment_status || 'paid', notes, req.user.id]);
+    const result = await db.run(
+      'INSERT INTO sales (uuid, farm_id, customer_id, customer_name, sale_date, total_amount, amount_paid, payment_method, payment_status, notes, recorded_by) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+      [uuid, farm_id, customer_id || null, customer_name || null, sale_date, total, payment_status === 'paid' ? total : 0, payment_method || 'cash', payment_status || 'paid', notes, req.user.id]
+    );
     const saleId = result.lastInsertRowid;
     for (const item of items) {
       await db.run('INSERT INTO sale_items (sale_id, product_type, batch_id, description, quantity, unit, unit_price, total_price) VALUES (?,?,?,?,?,?,?,?)',

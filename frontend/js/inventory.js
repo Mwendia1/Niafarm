@@ -18,24 +18,24 @@ async function loadInventory() {
 function renderInventoryAlerts(lowStock, expiring) {
   const el = document.getElementById('inventoryAlerts');
   const alerts = [];
-  if (lowStock.length) alerts.push(`<div class="alert alert-warning">⚠️ ${lowStock.length} item(s) are low on stock: ${lowStock.map(i => i.name).join(', ')}</div>`);
-  if (expiring.length) alerts.push(`<div class="alert alert-error">⏰ ${expiring.length} item(s) expiring within 30 days: ${expiring.map(i => i.name).join(', ')}</div>`);
+  if (lowStock.length) alerts.push(`<div class="alert alert-warning"> ${lowStock.length} item(s) are low on stock: ${lowStock.map(i => i.name).join(', ')}</div>`);
+  if (expiring.length) alerts.push(`<div class="alert alert-error"> ${expiring.length} item(s) expiring within 30 days: ${expiring.map(i => i.name).join(', ')}</div>`);
   el.innerHTML = alerts.join('');
 }
 
 function renderInventoryTable(items) {
   const tbody = document.getElementById('inventoryTableBody');
   if (!items.length) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📦</div><h4>No inventory items</h4><p>Click "Add Item" to start tracking inventory</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon"></div><h4>No inventory items</h4><p>Click "Add Item" to start tracking inventory</p></div></td></tr>`;
     return;
   }
-  const catIcons = { feeds:'🌾', vaccines:'💉', medicines:'💊', feeders:'🍽️', drinkers:'💧', equipment:'🔧', cleaning:'🧹', packaging:'📦' };
+  const catIcons = { feeds:'', vaccines:'', medicines:'', feeders:'', drinkers:'', equipment:'', cleaning:'', packaging:'' };
   tbody.innerHTML = items.map(item => {
     const isLow = item.quantity <= item.low_stock_threshold;
     const isExpiring = item.expiry_date && new Date(item.expiry_date) <= new Date(Date.now() + 30 * 86400000);
     return `
     <tr style="${isLow ? 'background:var(--warning-light)' : ''}">
-      <td>${catIcons[item.category] || '📦'} ${item.name}</td>
+      <td>${catIcons[item.category] || ''} ${item.name}</td>
       <td><span class="badge badge-grey">${item.category}</span></td>
       <td>
         <strong style="color:${isLow ? 'var(--danger)' : 'var(--grey-900)'}">${item.quantity} ${item.unit}</strong>
@@ -46,9 +46,9 @@ function renderInventoryTable(items) {
       <td style="color:${isExpiring ? 'var(--danger)' : ''}">${fmt.date(item.expiry_date)}</td>
       <td>${fmt.date(item.purchase_date)}</td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="openTransactionModal('${item.uuid}', '${item.name}')">📥 Stock</button>
-        <button class="btn btn-sm btn-outline" onclick="editInventoryItem('${item.uuid}')">✏️</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteInventoryItem('${item.uuid}', '${item.name}')">🗑️</button>
+        <button class="btn btn-sm btn-outline" onclick="openTransactionModal('${item.uuid}', '${item.name}')"> Stock</button>
+        <button class="btn btn-sm btn-outline" onclick="editInventoryItem('${item.uuid}')"></button>
+        <button class="btn btn-sm btn-danger" onclick="deleteInventoryItem('${item.uuid}', '${item.name}')"></button>
       </td>
     </tr>`;
   }).join('');

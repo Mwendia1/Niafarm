@@ -12,7 +12,7 @@ async function loadFarmsPage() {
 function renderFarmsTable(farms) {
   const tbody = document.getElementById('farmsTableBody');
   if (!farms.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🏡</div><h4>No farms registered</h4><p>Click "Add Farm" to register your first farm</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon"></div><h4>No farms registered</h4><p>Click "Add Farm" to register your first farm</p></div></td></tr>`;
     return;
   }
   tbody.innerHTML = farms.map(f => `
@@ -24,8 +24,8 @@ function renderFarmsTable(farms) {
       <td>${f.phone || '-'}</td>
       <td>${fmt.date(f.registration_date)}</td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="editFarm('${f.uuid}')">✏️ Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteFarm('${f.uuid}', '${f.name}')">🗑️</button>
+        <button class="btn btn-sm btn-outline" onclick="editFarm('${f.uuid}')"> Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteFarm('${f.uuid}', '${f.name}')"></button>
       </td>
     </tr>
   `).join('');

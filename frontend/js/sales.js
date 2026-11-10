@@ -22,10 +22,10 @@ function renderSalesSummary(sales) {
   const unpaid = total - paid;
   document.getElementById('salesSummaryCards').innerHTML = `
     <div class="summary-grid" style="margin-bottom:0">
-      <div class="summary-card"><div class="summary-icon green">💰</div><div class="summary-info"><div class="label">Total Sales</div><div class="value">${fmt.currency(total)}</div></div></div>
-      <div class="summary-card"><div class="summary-icon blue">✅</div><div class="summary-info"><div class="label">Paid</div><div class="value">${fmt.currency(paid)}</div></div></div>
-      <div class="summary-card"><div class="summary-icon red">⏳</div><div class="summary-info"><div class="label">Outstanding</div><div class="value">${fmt.currency(unpaid)}</div></div></div>
-      <div class="summary-card"><div class="summary-icon orange">🧾</div><div class="summary-info"><div class="label">Total Transactions</div><div class="value">${sales.length}</div></div></div>
+      <div class="summary-card"><div class="summary-icon green"></div><div class="summary-info"><div class="label">Total Sales</div><div class="value">${fmt.currency(total)}</div></div></div>
+      <div class="summary-card"><div class="summary-icon blue"></div><div class="summary-info"><div class="label">Paid</div><div class="value">${fmt.currency(paid)}</div></div></div>
+      <div class="summary-card"><div class="summary-icon red"></div><div class="summary-info"><div class="label">Outstanding</div><div class="value">${fmt.currency(unpaid)}</div></div></div>
+      <div class="summary-card"><div class="summary-icon orange"></div><div class="summary-info"><div class="label">Total Transactions</div><div class="value">${sales.length}</div></div></div>
     </div>
   `;
 }
@@ -33,7 +33,7 @@ function renderSalesSummary(sales) {
 function renderSalesTable(sales) {
   const tbody = document.getElementById('salesTableBody');
   if (!sales.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">💰</div><h4>No sales recorded</h4><p>Click "New Sale" to record a sale</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon"></div><h4>No sales recorded</h4><p>Click "New Sale" to record a sale</p></div></td></tr>`;
     return;
   }
   tbody.innerHTML = sales.map(s => `
@@ -45,8 +45,8 @@ function renderSalesTable(sales) {
       <td>${s.payment_method}</td>
       <td><span class="badge ${s.payment_status === 'paid' ? 'badge-green' : 'badge-red'}">${s.payment_status}</span></td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="viewSaleReceipt('${s.uuid}')">🧾 Receipt</button>
-        ${s.payment_status !== 'paid' ? `<button class="btn btn-sm btn-primary" onclick="markSalePaid('${s.uuid}', ${s.total_amount})">✅ Mark Paid</button>` : ''}
+        <button class="btn btn-sm btn-outline" onclick="viewSaleReceipt('${s.uuid}')"> Receipt</button>
+        ${s.payment_status !== 'paid' ? `<button class="btn btn-sm btn-primary" onclick="markSalePaid('${s.uuid}', ${s.total_amount})"> Mark Paid</button>` : ''}
       </td>
     </tr>
   `).join('');
@@ -55,7 +55,7 @@ function renderSalesTable(sales) {
 function renderCustomersTable(customers) {
   const tbody = document.getElementById('customersTableBody');
   if (!customers.length) {
-    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">👥</div><h4>No customers registered</h4></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon"></div><h4>No customers registered</h4></div></td></tr>`;
     return;
   }
   tbody.innerHTML = customers.map(c => `
@@ -65,8 +65,8 @@ function renderCustomersTable(customers) {
       <td>${c.email || '-'}</td>
       <td><span class="badge badge-grey">${c.customer_type}</span></td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="editCustomer('${c.uuid}')">✏️</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteCustomer('${c.uuid}', '${c.name}')">🗑️</button>
+        <button class="btn btn-sm btn-outline" onclick="editCustomer('${c.uuid}')"></button>
+        <button class="btn btn-sm btn-danger" onclick="deleteCustomer('${c.uuid}', '${c.name}')"></button>
       </td>
     </tr>
   `).join('');
@@ -100,10 +100,10 @@ function renderSaleItems() {
         <div class="form-group">
           <label class="form-label">Product Type</label>
           <select class="form-control" onchange="updateSaleItem(${i},'product_type',this.value)">
-            <option value="eggs" ${item.product_type==='eggs'?'selected':''}>🥚 Eggs</option>
-            <option value="live_chicken" ${item.product_type==='live_chicken'?'selected':''}>🐔 Live Chicken</option>
-            <option value="manure" ${item.product_type==='manure'?'selected':''}>🌱 Manure</option>
-            <option value="other" ${item.product_type==='other'?'selected':''}>📦 Other</option>
+            <option value="eggs" ${item.product_type==='eggs'?'selected':''}> Eggs</option>
+            <option value="live_chicken" ${item.product_type==='live_chicken'?'selected':''}> Live Chicken</option>
+            <option value="manure" ${item.product_type==='manure'?'selected':''}> Manure</option>
+            <option value="other" ${item.product_type==='other'?'selected':''}> Other</option>
           </select>
         </div>
         <div class="form-group">
@@ -169,7 +169,7 @@ async function viewSaleReceipt(uuid) {
     document.getElementById('receiptContent').innerHTML = `
       <div style="font-family:monospace;padding:20px;border:2px solid var(--grey-300);border-radius:8px">
         <div style="text-align:center;margin-bottom:16px">
-          <div style="font-size:24px">🐔</div>
+          <div style="font-size:24px"></div>
           <h2 style="color:var(--primary-dark)">${state.currentFarm?.name || 'NiaFarm'}</h2>
           <p style="font-size:12px;color:var(--grey-600)">SALES RECEIPT</p>
         </div>

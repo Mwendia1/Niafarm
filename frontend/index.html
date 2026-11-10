@@ -8,7 +8,9 @@
 </head>
 <body>
 
-<div class="offline-bar">⚠️ You are offline. Records will sync when connection is restored.</div>
+<div class="offline-bar" id="impersonateBanner" style="display:none;background:#7c3aed"> Viewing as another user. <a href="#" onclick="returnToAdmin()" style="color:white;font-weight:700;text-decoration:underline">Return to Admin</a></div>
+
+<div class="offline-bar"> You are offline. Records will sync when connection is restored.</div>
 
 <!-- AUTH SECTION -->
 <div id="authSection" class="auth-page">
@@ -16,7 +18,7 @@
     <!-- LOGIN -->
     <div id="loginForm" class="auth-card">
       <div class="auth-logo">
-        <span class="logo-icon"></span>
+        <div style="font-size:40px;font-weight:900;color:var(--primary-dark);letter-spacing:-2px">NF</div>
         <h1>NiaFarm</h1>
         <p>Poultry Farm Management System</p>
       </div>
@@ -39,7 +41,7 @@
     <!-- REGISTER -->
     <div id="registerForm" class="auth-card" style="display:none">
       <div class="auth-logo">
-        <span class="logo-icon"></span>
+        <div style="font-size:40px;font-weight:900;color:var(--primary-dark);letter-spacing:-2px">NF</div>
         <h1>Create Account</h1>
         <p>Start managing your farm today</p>
       </div>
@@ -75,32 +77,32 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <span class="logo-emoji"></span>
+      <span class="logo-emoji" style="font-size:22px;font-weight:900;color:white;letter-spacing:-1px">NF</span>
       <div class="brand"><h2>NiaFarm</h2><p>Farm Management</p></div>
     </div>
     <div class="sidebar-farm-selector">
       <select id="farmSelector"><option value="">-- Select Farm --</option></select>
     </div>
     <nav class="sidebar-nav">
-      <div class="nav-item active" data-page="dashboard"><span class="nav-icon"></span> Dashboard</div>
-      <div class="nav-item" data-page="farms"><span class="nav-icon"></span> Farm Registration</div>
-      <div class="nav-item" data-page="flocks"><span class="nav-icon"></span> Flock Management</div>
-      <div class="nav-item" data-page="feeding"><span class="nav-icon"></span> Feeding Management</div>
-      <div class="nav-item" data-page="health"><span class="nav-icon"></span> Health &amp; Vaccination</div>
-      <div class="nav-item" data-page="eggs"><span class="nav-icon"></span> Egg Production</div>
-      <div class="nav-item" data-page="inventory"><span class="nav-icon"></span> Inventory Management</div>
-      <div class="nav-item" data-page="sales"><span class="nav-icon"></span> Sales &amp; Customers</div>
-      <div class="nav-item" data-page="expenses"><span class="nav-icon"></span> Expenses &amp; Finances</div>
-      <div class="nav-item" data-page="reports"><span class="nav-icon"></span> Reports &amp; Analytics</div>
-      <div class="nav-item" data-page="notifications"><span class="nav-icon"></span> Notifications <span class="nav-badge" id="notifSidebarBadge" style="display:none">0</span></div>
-      <div class="nav-item" data-page="settings"><span class="nav-icon"></span> Settings</div>
+      <div class="nav-item active" data-page="dashboard"><span class="nav-icon">&#9632;</span> Dashboard</div>
+      <div class="nav-item" data-page="farms"><span class="nav-icon">&#9632;</span> Farm Registration</div>
+      <div class="nav-item" data-page="flocks"><span class="nav-icon">&#9632;</span> Flock Management</div>
+      <div class="nav-item" data-page="feeding"><span class="nav-icon">&#9632;</span> Feeding Management</div>
+      <div class="nav-item" data-page="health"><span class="nav-icon">&#9632;</span> Health &amp; Vaccination</div>
+      <div class="nav-item" data-page="eggs"><span class="nav-icon">&#9632;</span> Egg Production</div>
+      <div class="nav-item" data-page="inventory"><span class="nav-icon">&#9632;</span> Inventory Management</div>
+      <div class="nav-item" data-page="sales"><span class="nav-icon">&#9632;</span> Sales &amp; Customers</div>
+      <div class="nav-item" data-page="expenses"><span class="nav-icon">&#9632;</span> Expenses &amp; Finances</div>
+      <div class="nav-item" data-page="reports"><span class="nav-icon">&#9632;</span> Reports &amp; Analytics</div>
+      <div class="nav-item" data-page="notifications"><span class="nav-icon">&#9632;</span> Notifications <span class="nav-badge" id="notifSidebarBadge" style="display:none">0</span></div>
+      <div class="nav-item" data-page="settings"><span class="nav-icon">&#9632;</span> Settings</div>
     </nav>
     <div style="padding:16px;border-top:1px solid rgba(255,255,255,0.1)">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
         <div class="user-avatar" id="userAvatarMenu">U</div>
         <div><div id="userName" style="font-size:13px;font-weight:600;color:white"></div><div id="userRole" style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:capitalize"></div></div>
       </div>
-      <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center" onclick="logout()">🚪 Sign Out</button>
+      <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center" onclick="logout()"> Sign Out</button>
     </div>
   </aside>
 
@@ -108,11 +110,11 @@
   <div class="main-content">
     <!-- TOPBAR -->
     <header class="topbar">
-      <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+      <button class="sidebar-toggle" id="sidebarToggle"></button>
       <div class="topbar-title" id="pageTitle">Dashboard</div>
       <div class="topbar-actions">
         <button class="topbar-btn" id="notifBtn" onclick="toggleNotifPanel()" title="Notifications">
-          🔔 <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+          &#128276; <span class="notif-badge" id="notifBadge" style="display:none">0</span>
         </button>
         <div class="user-avatar" id="userAvatar" onclick="navigate('settings')" title="Settings">U</div>
       </div>
@@ -121,7 +123,7 @@
     <!-- NOTIFICATION PANEL -->
     <div class="notif-panel" id="notifPanel">
       <div class="notif-panel-header">
-        <h3>🔔 Notifications</h3>
+        <h3> Notifications</h3>
         <button class="btn btn-sm btn-outline" onclick="markAllRead()">Mark all read</button>
       </div>
       <div class="notif-list" id="notifPanelList"></div>
@@ -196,7 +198,7 @@
         </div>
         <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
           <div class="summary-card" style="flex:1;min-width:180px">
-            <div class="summary-icon green">🌾</div>
+            <div class="summary-icon green"></div>
             <div class="summary-info"><div class="label">Total Feed Stock</div><div class="value" id="feedStockTotal">0 kg</div></div>
           </div>
         </div>
@@ -218,7 +220,7 @@
         </div>
         <div id="feedSchedulesTab" class="tab-panel">
           <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
-            <button class="btn btn-primary" onclick="openAddScheduleModal()">➕ Add Schedule</button>
+            <button class="btn btn-primary" onclick="openAddScheduleModal()"> Add Schedule</button>
           </div>
           <div class="card"><div class="card-body"><div class="table-wrapper">
             <table>
@@ -248,9 +250,9 @@
         <div class="section-header">
           <div><h2>Health &amp; Vaccination</h2><p>Monitor flock health and vaccination schedules</p></div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-outline" onclick="showVaccinationTemplates()">📋 Templates</button>
-            <button class="btn btn-outline" onclick="openAddVaccinationModal()">💉 Add Vaccination</button>
-            <button class="btn btn-primary" onclick="openAddHealthModal()">➕ Health Record</button>
+            <button class="btn btn-outline" onclick="showVaccinationTemplates()"> Templates</button>
+            <button class="btn btn-outline" onclick="openAddVaccinationModal()"> Add Vaccination</button>
+            <button class="btn btn-primary" onclick="openAddHealthModal()"> Health Record</button>
           </div>
         </div>
         <div class="tabs">
@@ -275,7 +277,7 @@
           </div></div></div>
         </div>
         <div id="vacCalendarTab" class="tab-panel">
-          <div class="card"><div class="card-header"><h3>📅 Vaccination Calendar</h3></div>
+          <div class="card"><div class="card-header"><h3> Vaccination Calendar</h3></div>
           <div class="card-body" id="vaccinationCalendar"></div></div>
         </div>
       </div>
@@ -284,7 +286,7 @@
       <div class="page" id="page-eggs">
         <div class="section-header">
           <div><h2>Egg Production</h2><p>Track daily egg collection and stock</p></div>
-          <button class="btn btn-primary" onclick="openAddEggModal()">➕ Record Production</button>
+          <button class="btn btn-primary" onclick="openAddEggModal()"> Record Production</button>
         </div>
         <div style="margin-bottom:16px;display:flex;gap:8px">
           <button class="btn btn-outline egg-period-btn" onclick="filterEggsByPeriod('week')">This Week</button>
@@ -293,7 +295,7 @@
         </div>
         <div id="eggSummaryCards" style="margin-bottom:20px"></div>
         <div class="card" style="margin-bottom:20px">
-          <div class="card-header"><h3>📈 Production Trend</h3></div>
+          <div class="card-header"><h3> Production Trend</h3></div>
           <div class="card-body"><div class="chart-container"><canvas id="eggProdChart"></canvas></div></div>
         </div>
         <div class="card">
@@ -311,7 +313,7 @@
       <div class="page" id="page-inventory">
         <div class="section-header">
           <div><h2>Inventory Management</h2><p>Track farm supplies and stock levels</p></div>
-          <button class="btn btn-primary" onclick="openAddInventoryModal()">➕ Add Item</button>
+          <button class="btn btn-primary" onclick="openAddInventoryModal()"> Add Item</button>
         </div>
         <div id="inventoryAlerts" style="margin-bottom:16px"></div>
         <div class="card">
@@ -345,7 +347,7 @@
       <div class="page" id="page-sales">
         <div class="section-header">
           <div><h2>Sales &amp; Customers</h2><p>Manage sales records and customer information</p></div>
-          <button class="btn btn-primary" onclick="openNewSaleModal()">➕ New Sale</button>
+          <button class="btn btn-primary" onclick="openNewSaleModal()"> New Sale</button>
         </div>
         <div id="salesSummaryCards" style="margin-bottom:20px"></div>
         <div class="tabs">
@@ -365,7 +367,7 @@
         </div>
         <div id="customersTab" class="tab-panel">
           <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
-            <button class="btn btn-primary" onclick="openAddCustomerModal()">➕ Add Customer</button>
+            <button class="btn btn-primary" onclick="openAddCustomerModal()"> Add Customer</button>
           </div>
           <div class="card"><div class="card-body"><div class="table-wrapper">
             <table>
@@ -381,8 +383,8 @@
         <div class="section-header">
           <div><h2>Expenses &amp; Finances</h2><p>Track income, expenses and profitability</p></div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-outline" onclick="openAddIncomeModal()">💰 Add Income</button>
-            <button class="btn btn-primary" onclick="openAddExpenseModal()">➕ Add Expense</button>
+            <button class="btn btn-outline" onclick="openAddIncomeModal()"> Add Income</button>
+            <button class="btn btn-primary" onclick="openAddExpenseModal()"> Add Expense</button>
           </div>
         </div>
         <div id="financeSummaryCards" style="margin-bottom:20px"></div>
@@ -395,13 +397,13 @@
             <label class="form-label">To</label>
             <input type="date" class="form-control" id="finEndDate" style="width:160px">
           </div>
-          <button class="btn btn-outline" onclick="filterFinances()">🔍 Filter</button>
-          <button class="btn btn-secondary" onclick="loadExpenses()">🔄 Reset</button>
+          <button class="btn btn-outline" onclick="filterFinances()"> Filter</button>
+          <button class="btn btn-secondary" onclick="loadExpenses()"> Reset</button>
         </div>
         <div class="charts-grid" style="margin-bottom:20px">
-          <div class="card"><div class="card-header"><h3>📊 Monthly Income vs Expenses</h3></div>
+          <div class="card"><div class="card-header"><h3> Monthly Income vs Expenses</h3></div>
             <div class="card-body"><div class="chart-container"><canvas id="finExpChart"></canvas></div></div></div>
-          <div class="card"><div class="card-header"><h3>🥧 Expenses by Category</h3></div>
+          <div class="card"><div class="card-header"><h3> Expenses by Category</h3></div>
             <div class="card-body"><div class="chart-container"><canvas id="finPieChart"></canvas></div></div></div>
         </div>
         <div class="tabs">
@@ -431,8 +433,8 @@
         <div class="section-header">
           <div><h2>Reports &amp; Analytics</h2><p>Generate detailed farm performance reports</p></div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-outline" onclick="printReport()">🖨️ Print</button>
-            <button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button>
+            <button class="btn btn-outline" onclick="printReport()"> Print</button>
+            <button class="btn btn-outline" onclick="exportCSV()"> Export CSV</button>
           </div>
         </div>
         <div class="card" style="margin-bottom:20px">
@@ -466,7 +468,7 @@
                 <input type="date" class="form-control" id="reportEndDate">
               </div>
             </div>
-            <button class="btn btn-primary" onclick="generateReport()">📊 Generate Report</button>
+            <button class="btn btn-primary" onclick="generateReport()"> Generate Report</button>
           </div>
         </div>
         <div id="reportOutput"></div>
@@ -477,8 +479,8 @@
         <div class="section-header">
           <div><h2>Notifications &amp; Reminders</h2><p>Stay on top of important farm activities</p></div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-outline" onclick="markAllRead()">✅ Mark All Read</button>
-            <button class="btn btn-primary" onclick="openAddReminderModal()">➕ Add Reminder</button>
+            <button class="btn btn-outline" onclick="markAllRead()"> Mark All Read</button>
+            <button class="btn btn-primary" onclick="openAddReminderModal()"> Add Reminder</button>
           </div>
         </div>
         <div class="card">
@@ -520,7 +522,7 @@
               <label class="form-label">Currency</label>
               <select class="form-control" style="max-width:200px"><option value="KES">KSh (KES) - Kenyan Shilling</option></select>
             </div>
-            <button class="btn btn-primary" onclick="saveProfile()">💾 Save Profile</button>
+            <button class="btn btn-primary" onclick="saveProfile()"> Save Profile</button>
           </div></div>
         </div>
         <div id="securityTab" class="tab-panel">
@@ -538,7 +540,7 @@
               <label class="form-label">Confirm New Password</label>
               <input type="password" class="form-control" id="confirmPassword">
             </div>
-            <button class="btn btn-primary" onclick="changePassword()">🔒 Change Password</button>
+            <button class="btn btn-primary" onclick="changePassword()"> Change Password</button>
           </div></div>
         </div>
         <div id="usersTab" class="tab-panel">
@@ -546,7 +548,7 @@
             <h4 style="margin-bottom:16px">System Users</h4>
             <div class="table-wrapper">
               <table>
-                <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Joined</th></tr></thead>
+                <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
                 <tbody id="usersTableBody"><tr><td colspan="6" style="text-align:center;color:var(--grey-500)">Loading users...</td></tr></tbody>
               </table>
             </div>
@@ -566,7 +568,7 @@
   <div class="modal modal-lg">
     <div class="modal-header">
       <h3 id="farmModalTitle">Register New Farm</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="farmForm">
@@ -619,7 +621,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveFarm()">💾 Save Farm</button>
+      <button class="btn btn-primary" onclick="saveFarm()"> Save Farm</button>
     </div>
   </div>
 </div>
@@ -629,7 +631,7 @@
   <div class="modal modal-lg">
     <div class="modal-header">
       <h3 id="batchModalTitle">Add New Batch</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="batchForm">
@@ -687,7 +689,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveBatch()">💾 Save Batch</button>
+      <button class="btn btn-primary" onclick="saveBatch()"> Save Batch</button>
     </div>
   </div>
 </div>
@@ -697,7 +699,7 @@
   <div class="modal modal-lg">
     <div class="modal-header">
       <h3>Batch Details</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body" id="batchDetailContent"></div>
     <div class="modal-footer">
@@ -711,7 +713,7 @@
   <div class="modal">
     <div class="modal-header">
       <h3>Record Mortality</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <p style="margin-bottom:16px;color:var(--grey-600)">Batch: <strong id="mortalityBatchName"></strong></p>
@@ -744,7 +746,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-danger" onclick="saveMortality()">💀 Record Deaths</button>
+      <button class="btn btn-danger" onclick="saveMortality()"> Record Deaths</button>
     </div>
   </div>
 </div>
@@ -754,7 +756,7 @@
   <div class="modal">
     <div class="modal-header">
       <h3>Record Feeding</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="feedForm">
@@ -796,7 +798,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveFeedRecord()">💾 Save Record</button>
+      <button class="btn btn-primary" onclick="saveFeedRecord()"> Save Record</button>
     </div>
   </div>
 </div>
@@ -806,7 +808,7 @@
   <div class="modal">
     <div class="modal-header">
       <h3>Add Feeding Schedule</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="scheduleForm">
@@ -848,7 +850,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveSchedule()">💾 Save Schedule</button>
+      <button class="btn btn-primary" onclick="saveSchedule()"> Save Schedule</button>
     </div>
   </div>
 </div>
@@ -858,7 +860,7 @@
   <div class="modal modal-lg">
     <div class="modal-header">
       <h3>Add Health Record</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="healthForm">
@@ -924,7 +926,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveHealthRecord()">💾 Save Record</button>
+      <button class="btn btn-primary" onclick="saveHealthRecord()"> Save Record</button>
     </div>
   </div>
 </div>
@@ -934,7 +936,7 @@
   <div class="modal modal-lg">
     <div class="modal-header">
       <h3>Add Vaccination Record</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="vaccinationForm">
@@ -995,7 +997,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveVaccination()">💾 Save Vaccination</button>
+      <button class="btn btn-primary" onclick="saveVaccination()"> Save Vaccination</button>
     </div>
   </div>
 </div>
@@ -1004,8 +1006,8 @@
 <div class="modal-overlay" id="templateModal">
   <div class="modal modal-lg">
     <div class="modal-header">
-      <h3>📋 Vaccination Schedule Templates</h3>
-      <button class="modal-close">✕</button>
+      <h3> Vaccination Schedule Templates</h3>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <div class="alert alert-warning" id="templateDisclaimer" style="margin-bottom:16px"></div>
@@ -1035,7 +1037,7 @@
   <div class="modal modal-lg">
     <div class="modal-header">
       <h3>Record Egg Production</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="eggForm">
@@ -1093,7 +1095,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveEggRecord()">💾 Save Record</button>
+      <button class="btn btn-primary" onclick="saveEggRecord()"> Save Record</button>
     </div>
   </div>
 </div>
@@ -1103,7 +1105,7 @@
   <div class="modal modal-lg">
     <div class="modal-header">
       <h3 id="inventoryModalTitle">Add Inventory Item</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="inventoryForm">
@@ -1163,7 +1165,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveInventoryItem()">💾 Save Item</button>
+      <button class="btn btn-primary" onclick="saveInventoryItem()"> Save Item</button>
     </div>
   </div>
 </div>
@@ -1173,7 +1175,7 @@
   <div class="modal">
     <div class="modal-header">
       <h3>Record Stock Transaction</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <p style="margin-bottom:16px;color:var(--grey-600)">Item: <strong id="transactionItemName"></strong></p>
@@ -1207,7 +1209,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveTransaction()">💾 Save Transaction</button>
+      <button class="btn btn-primary" onclick="saveTransaction()"> Save Transaction</button>
     </div>
   </div>
 </div>
@@ -1217,7 +1219,7 @@
   <div class="modal modal-xl">
     <div class="modal-header">
       <h3>New Sale</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="saleForm">
@@ -1257,7 +1259,7 @@
       <div style="margin-top:16px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <h4>Sale Items</h4>
-          <button class="btn btn-outline btn-sm" onclick="addSaleItem()">➕ Add Item</button>
+          <button class="btn btn-outline btn-sm" onclick="addSaleItem()"> Add Item</button>
         </div>
         <div id="saleItemsContainer"></div>
         <div style="text-align:right;margin-top:12px;font-size:18px;font-weight:700;color:var(--primary)">
@@ -1267,7 +1269,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveSale()">💾 Record Sale</button>
+      <button class="btn btn-primary" onclick="saveSale()"> Record Sale</button>
     </div>
   </div>
 </div>
@@ -1276,13 +1278,13 @@
 <div class="modal-overlay" id="receiptModal">
   <div class="modal modal-lg">
     <div class="modal-header">
-      <h3>🧾 Sales Receipt</h3>
-      <button class="modal-close">✕</button>
+      <h3> Sales Receipt</h3>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body" id="receiptContent"></div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Close</button>
-      <button class="btn btn-primary" onclick="printReceipt()">🖨️ Print Receipt</button>
+      <button class="btn btn-primary" onclick="printReceipt()"> Print Receipt</button>
     </div>
   </div>
 </div>
@@ -1292,7 +1294,7 @@
   <div class="modal">
     <div class="modal-header">
       <h3 id="customerModalTitle">Add Customer</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="customerForm">
@@ -1329,7 +1331,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveCustomer()">💾 Save Customer</button>
+      <button class="btn btn-primary" onclick="saveCustomer()"> Save Customer</button>
     </div>
   </div>
 </div>
@@ -1339,7 +1341,7 @@
   <div class="modal">
     <div class="modal-header">
       <h3 id="expenseModalTitle">Record Expense</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="expenseForm">
@@ -1396,7 +1398,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveExpense()">💾 Save Expense</button>
+      <button class="btn btn-primary" onclick="saveExpense()"> Save Expense</button>
     </div>
   </div>
 </div>
@@ -1406,7 +1408,7 @@
   <div class="modal">
     <div class="modal-header">
       <h3>Record Income</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="incomeForm">
@@ -1452,7 +1454,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveIncome()">💾 Save Income</button>
+      <button class="btn btn-primary" onclick="saveIncome()"> Save Income</button>
     </div>
   </div>
 </div>
@@ -1462,7 +1464,7 @@
   <div class="modal">
     <div class="modal-header">
       <h3>Add Reminder</h3>
-      <button class="modal-close">✕</button>
+      <button class="modal-close"></button>
     </div>
     <div class="modal-body">
       <form id="reminderForm">
@@ -1501,7 +1503,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary modal-close">Cancel</button>
-      <button class="btn btn-primary" onclick="saveReminder()">💾 Save Reminder</button>
+      <button class="btn btn-primary" onclick="saveReminder()"> Save Reminder</button>
     </div>
   </div>
 </div>

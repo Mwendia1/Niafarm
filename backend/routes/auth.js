@@ -59,4 +59,23 @@ router.put('/profile', authenticateToken, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+// Admin: get all users
+router.get('/users', authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+    res.json(await db.all('SELECT id, uuid, name, email, phone, role, is_active, created_at FROM users ORDER BY created_at DESC'));
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// Admin: impersonate a user
+router.post('/impersonate/:id', authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+    const user = await db.get('SELECT id, uuid, name, email, role FROM users WHERE id = ? AND is_active = 1', [req.params.id]);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    const token = jwt.sign({ id: user.id, uuid: user.uuid, name: user.name, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '2h' });
+    res.json({ token, user });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 module.exports = router;

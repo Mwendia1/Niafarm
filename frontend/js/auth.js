@@ -3,6 +3,9 @@ async function initAuth() {
   const token = localStorage.getItem('nf_token');
   const user = state.getUser();
   if (token && user) {
+    if (localStorage.getItem('nf_admin_token')) {
+      document.getElementById('impersonateBanner').style.display = 'flex';
+    }
     showApp(user);
   } else {
     showAuthPage('login');
@@ -69,7 +72,7 @@ document.getElementById('registerFormEl').addEventListener('submit', async (e) =
     localStorage.setItem('nf_token', data.token);
     state.setUser(data.user);
     showApp(data.user);
-    toast.success('Account created! Welcome to NiaFarm 🐔');
+    toast.success('Account created! Welcome to NiaFarm ');
   } catch (err) {
     document.getElementById('registerError').textContent = err.message;
     document.getElementById('registerError').style.display = 'block';
@@ -80,8 +83,44 @@ function logout() {
   localStorage.removeItem('nf_token');
   localStorage.removeItem('nf_user');
   localStorage.removeItem('nf_farm_id');
+  localStorage.removeItem('nf_admin_token');
+  localStorage.removeItem('nf_admin_user');
   state.user = null; state.currentFarm = null;
   location.reload();
+}
+
+async function impersonateUser(userId, userName) {
+  if (!confirm(`Login as ${userName}?`)) return;
+  try {
+    const data = await api.post(`/auth/impersonate/${userId}`, {});
+    // Save admin session
+    localStorage.setItem('nf_admin_token', localStorage.getItem('nf_token'));
+    localStorage.setItem('nf_admin_user', localStorage.getItem('nf_user'));
+    // Switch to target user
+    localStorage.setItem('nf_token', data.token);
+    state.setUser(data.user);
+    localStorage.removeItem('nf_farm_id');
+    state.currentFarm = null;
+    document.getElementById('impersonateBanner').style.display = 'flex';
+    await showApp(data.user);
+    toast.success(`Now viewing as ${data.user.name}`);
+  } catch (err) { toast.error(err.message); }
+}
+
+async function returnToAdmin() {
+  const adminToken = localStorage.getItem('nf_admin_token');
+  const adminUser = localStorage.getItem('nf_admin_user');
+  if (!adminToken || !adminUser) return;
+  localStorage.setItem('nf_token', adminToken);
+  localStorage.removeItem('nf_admin_token');
+  localStorage.removeItem('nf_admin_user');
+  localStorage.removeItem('nf_farm_id');
+  state.currentFarm = null;
+  const user = JSON.parse(adminUser);
+  state.setUser(user);
+  document.getElementById('impersonateBanner').style.display = 'none';
+  await showApp(user);
+  toast.success('Returned to admin account');
 }
 
 async function loadNotificationCount() {

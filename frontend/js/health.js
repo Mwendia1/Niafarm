@@ -17,7 +17,7 @@ async function loadHealth() {
 function renderHealthTable(records) {
   const tbody = document.getElementById('healthTableBody');
   if (!records.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🏥</div><h4>No health records</h4><p>Click "Add Health Record" to start tracking</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon"></div><h4>No health records</h4><p>Click "Add Health Record" to start tracking</p></div></td></tr>`;
     return;
   }
   const typeColors = { disease: 'badge-red', treatment: 'badge-blue', checkup: 'badge-green', injury: 'badge-orange' };
@@ -30,8 +30,8 @@ function renderHealthTable(records) {
       <td>${r.medication || '-'}</td>
       <td>${fmt.currency(r.cost)}</td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="editHealthRecord('${r.uuid}')">✏️</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteHealthRecord('${r.uuid}')">🗑️</button>
+        <button class="btn btn-sm btn-outline" onclick="editHealthRecord('${r.uuid}')"></button>
+        <button class="btn btn-sm btn-danger" onclick="deleteHealthRecord('${r.uuid}')"></button>
       </td>
     </tr>
   `).join('');
@@ -40,7 +40,7 @@ function renderHealthTable(records) {
 function renderVaccinationTable(vaccinations) {
   const tbody = document.getElementById('vaccinationTableBody');
   if (!vaccinations.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">💉</div><h4>No vaccination records</h4></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon"></div><h4>No vaccination records</h4></div></td></tr>`;
     return;
   }
   const today = new Date();
@@ -49,9 +49,9 @@ function renderVaccinationTable(vaccinations) {
     const isOverdue = due && due < today && v.status !== 'completed';
     const isDueSoon = due && !isOverdue && (due - today) < 7 * 86400000;
     let statusBadge = `<span class="badge badge-grey">${v.status}</span>`;
-    if (v.status === 'completed') statusBadge = `<span class="badge badge-green">✅ Completed</span>`;
-    else if (isOverdue) statusBadge = `<span class="badge badge-red">⚠️ Overdue</span>`;
-    else if (isDueSoon) statusBadge = `<span class="badge badge-orange">⏰ Due Soon</span>`;
+    if (v.status === 'completed') statusBadge = `<span class="badge badge-green"> Completed</span>`;
+    else if (isOverdue) statusBadge = `<span class="badge badge-red"> Overdue</span>`;
+    else if (isDueSoon) statusBadge = `<span class="badge badge-orange"> Due Soon</span>`;
     return `
     <tr style="${isOverdue ? 'background:var(--danger-light)' : isDueSoon ? 'background:var(--warning-light)' : ''}">
       <td>${v.batch_number}</td>
@@ -61,8 +61,8 @@ function renderVaccinationTable(vaccinations) {
       <td>${v.administered_by || '-'}</td>
       <td>${statusBadge}</td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="markVaccinationDone('${v.uuid}')">✅ Done</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteVaccination('${v.uuid}')">🗑️</button>
+        <button class="btn btn-sm btn-outline" onclick="markVaccinationDone('${v.uuid}')"> Done</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteVaccination('${v.uuid}')"></button>
       </td>
     </tr>`;
   }).join('');

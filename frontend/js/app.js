@@ -1,5 +1,5 @@
 // ===== API CLIENT =====
-const API_BASE = '/api';
+const API_BASE = 'http://localhost:3000/api';
 
 const api = {
   token: () => localStorage.getItem('nf_token'),
@@ -95,7 +95,7 @@ const toast = {
     const container = document.getElementById('toastContainer');
     const el = document.createElement('div');
     el.className = `toast ${type}`;
-    const icons = { success: '✅', error: '❌', warning: '⚠️', default: 'ℹ️' };
+    const icons = { success: '', error: '', warning: '', default: 'ℹ' };
     el.innerHTML = `<span>${icons[type] || icons.default}</span><span>${msg}</span>`;
     container.appendChild(el);
     setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(100%)'; el.style.transition = '0.3s'; setTimeout(() => el.remove(), 300); }, duration);
@@ -132,7 +132,7 @@ const fmt = {
   currency: (n) => `KSh ${Number(n || 0).toLocaleString('en-KE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
   number: (n) => Number(n || 0).toLocaleString(),
   date: (d) => d ? new Date(d).toLocaleDateString('en-KE', { day: '2-digit', month: 'short', year: 'numeric' }) : '-',
-  dateInput: (d) => d ? d.split('T')[0] : new Date().toISOString().split('T')[0],
+  dateInput: (d) => d ? new Date(d).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
   percent: (n, total) => total > 0 ? ((n / total) * 100).toFixed(1) + '%' : '0%',
   ago: (d) => {
     const diff = Date.now() - new Date(d).getTime();

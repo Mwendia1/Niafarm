@@ -16,10 +16,10 @@ function renderBatchCards(batches) {
   const active = batches.filter(b => b.status === 'active');
   document.getElementById('flockSummary').innerHTML = `
     <div class="summary-grid" style="margin-bottom:0">
-      <div class="summary-card"><div class="summary-icon green">🐔</div><div class="summary-info"><div class="label">Active Batches</div><div class="value">${active.length}</div></div></div>
-      <div class="summary-card"><div class="summary-icon blue">🔢</div><div class="summary-info"><div class="label">Total Birds</div><div class="value">${fmt.number(active.reduce((s,b)=>s+b.current_count,0))}</div></div></div>
-      <div class="summary-card"><div class="summary-icon orange">📦</div><div class="summary-info"><div class="label">Initial Count</div><div class="value">${fmt.number(active.reduce((s,b)=>s+b.initial_count,0))}</div></div></div>
-      <div class="summary-card"><div class="summary-icon red">💀</div><div class="summary-info"><div class="label">Total Deaths</div><div class="value">${fmt.number(active.reduce((s,b)=>s+(b.initial_count-b.current_count),0))}</div></div></div>
+      <div class="summary-card"><div class="summary-icon green"></div><div class="summary-info"><div class="label">Active Batches</div><div class="value">${active.length}</div></div></div>
+      <div class="summary-card"><div class="summary-icon blue"></div><div class="summary-info"><div class="label">Total Birds</div><div class="value">${fmt.number(active.reduce((s,b)=>s+b.current_count,0))}</div></div></div>
+      <div class="summary-card"><div class="summary-icon orange"></div><div class="summary-info"><div class="label">Initial Count</div><div class="value">${fmt.number(active.reduce((s,b)=>s+b.initial_count,0))}</div></div></div>
+      <div class="summary-card"><div class="summary-icon red"></div><div class="summary-info"><div class="label">Total Deaths</div><div class="value">${fmt.number(active.reduce((s,b)=>s+(b.initial_count-b.current_count),0))}</div></div></div>
     </div>
   `;
 }
@@ -27,7 +27,7 @@ function renderBatchCards(batches) {
 function renderBatchesTable(batches) {
   const tbody = document.getElementById('batchesTableBody');
   if (!batches.length) {
-    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">🐔</div><h4>No batches registered</h4><p>Click "Add Batch" to register your first flock</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon"></div><h4>No batches registered</h4><p>Click "Add Batch" to register your first flock</p></div></td></tr>`;
     return;
   }
   const typeColors = { Broilers: 'badge-orange', Layers: 'badge-blue', Kienyeji: 'badge-green' };
@@ -45,10 +45,10 @@ function renderBatchesTable(batches) {
       <td>${fmt.date(b.arrival_date)}</td>
       <td><span class="badge ${b.status === 'active' ? 'badge-green' : 'badge-grey'}">${b.status}</span></td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="viewBatch('${b.uuid}')">👁️</button>
-        <button class="btn btn-sm btn-outline" onclick="editBatch('${b.uuid}')">✏️</button>
-        <button class="btn btn-sm btn-warning" onclick="openMortalityModal('${b.uuid}', '${b.batch_number}')">💀</button>
-        <button class="btn btn-sm btn-danger" onclick="closeBatch('${b.uuid}', '${b.batch_number}')">🗑️</button>
+        <button class="btn btn-sm btn-outline" onclick="viewBatch('${b.uuid}')"></button>
+        <button class="btn btn-sm btn-outline" onclick="editBatch('${b.uuid}')"></button>
+        <button class="btn btn-sm btn-warning" onclick="openMortalityModal('${b.uuid}', '${b.batch_number}')"></button>
+        <button class="btn btn-sm btn-danger" onclick="closeBatch('${b.uuid}', '${b.batch_number}')"></button>
       </td>
     </tr>`;
   }).join('');

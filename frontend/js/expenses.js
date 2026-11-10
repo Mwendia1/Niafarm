@@ -22,10 +22,10 @@ function renderFinanceSummary(s) {
   const profit = s.gross_profit;
   document.getElementById('financeSummaryCards').innerHTML = `
     <div class="summary-grid" style="margin-bottom:0">
-      <div class="summary-card"><div class="summary-icon green">💰</div><div class="summary-info"><div class="label">Total Income</div><div class="value">${fmt.currency(s.total_income)}</div></div></div>
-      <div class="summary-card"><div class="summary-icon red">💸</div><div class="summary-info"><div class="label">Total Expenses</div><div class="value">${fmt.currency(s.total_expenses)}</div></div></div>
-      <div class="summary-card"><div class="summary-icon ${profit>=0?'green':'red'}">📊</div><div class="summary-info"><div class="label">Net Profit/Loss</div><div class="value ${profit>=0?'text-profit':'text-loss'}">${profit>=0?'+':''}${fmt.currency(profit)}</div></div></div>
-      <div class="summary-card"><div class="summary-icon blue">🐔</div><div class="summary-info"><div class="label">Cost Per Bird</div><div class="value">${fmt.currency(s.cost_per_bird)}</div></div></div>
+      <div class="summary-card"><div class="summary-icon green"></div><div class="summary-info"><div class="label">Total Income</div><div class="value">${fmt.currency(s.total_income)}</div></div></div>
+      <div class="summary-card"><div class="summary-icon red"></div><div class="summary-info"><div class="label">Total Expenses</div><div class="value">${fmt.currency(s.total_expenses)}</div></div></div>
+      <div class="summary-card"><div class="summary-icon ${profit>=0?'green':'red'}"></div><div class="summary-info"><div class="label">Net Profit/Loss</div><div class="value ${profit>=0?'text-profit':'text-loss'}">${profit>=0?'+':''}${fmt.currency(profit)}</div></div></div>
+      <div class="summary-card"><div class="summary-icon blue"></div><div class="summary-info"><div class="label">Cost Per Bird</div><div class="value">${fmt.currency(s.cost_per_bird)}</div></div></div>
     </div>
   `;
 }
@@ -33,7 +33,7 @@ function renderFinanceSummary(s) {
 function renderExpensesTable(expenses) {
   const tbody = document.getElementById('expensesTableBody');
   if (!expenses.length) {
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">💸</div><h4>No expenses recorded</h4></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon"></div><h4>No expenses recorded</h4></div></td></tr>`;
     return;
   }
   const catColors = { feeds:'badge-green', labour:'badge-blue', medicines:'badge-orange', equipment:'badge-grey', transport:'badge-blue', electricity:'badge-yellow', water:'badge-blue' };
@@ -45,8 +45,8 @@ function renderExpensesTable(expenses) {
       <td><strong>${fmt.currency(e.amount)}</strong></td>
       <td>${e.payment_method}</td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="editExpense('${e.uuid}')">✏️</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteExpense('${e.uuid}')">🗑️</button>
+        <button class="btn btn-sm btn-outline" onclick="editExpense('${e.uuid}')"></button>
+        <button class="btn btn-sm btn-danger" onclick="deleteExpense('${e.uuid}')"></button>
       </td>
     </tr>
   `).join('');
@@ -55,7 +55,7 @@ function renderExpensesTable(expenses) {
 function renderIncomeTable(income) {
   const tbody = document.getElementById('incomeTableBody');
   if (!income.length) {
-    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">💰</div><h4>No income recorded</h4></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon"></div><h4>No income recorded</h4></div></td></tr>`;
     return;
   }
   tbody.innerHTML = income.map(i => `

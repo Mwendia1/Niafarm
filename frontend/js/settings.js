@@ -6,7 +6,10 @@ async function loadSettings() {
   document.getElementById('settingEmail').value = user.email || '';
   document.getElementById('settingPhone').value = user.phone || '';
   document.getElementById('settingRole').textContent = user.role?.replace(/_/g, ' ') || '';
-  if (['admin', 'farm_owner'].includes(user.role)) loadUsersList();
+  // Users tab: admin only
+  const usersTabBtn = document.querySelector('.tab-btn[onclick*="usersTab"]');
+  if (usersTabBtn) usersTabBtn.style.display = user.role === 'admin' ? '' : 'none';
+  if (user.role === 'admin') loadUsersList();
 }
 
 async function saveProfile() {
@@ -44,9 +47,10 @@ async function changePassword() {
 
 async function loadUsersList() {
   try {
-    const users = await api.get('/notifications/users');
+    const users = await api.get('/auth/users');
     const tbody = document.getElementById('usersTableBody');
     if (!tbody) return;
+    const me = state.getUser();
     tbody.innerHTML = users.map(u => `
       <tr>
         <td>${u.name}</td>
@@ -55,6 +59,7 @@ async function loadUsersList() {
         <td><span class="badge badge-blue">${u.role.replace(/_/g, ' ')}</span></td>
         <td><span class="badge ${u.is_active ? 'badge-green' : 'badge-red'}">${u.is_active ? 'Active' : 'Inactive'}</span></td>
         <td>${fmt.date(u.created_at)}</td>
+        <td>${u.id !== me.id ? `<button class="btn btn-sm btn-outline" onclick="impersonateUser(${u.id},'${u.name}')">Login as</button>` : '<span style="color:var(--grey-400)">You</span>'}</td>
       </tr>
     `).join('');
   } catch {}

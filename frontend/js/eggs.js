@@ -20,12 +20,12 @@ function renderEggSummary(s) {
   if (!s) return;
   document.getElementById('eggSummaryCards').innerHTML = `
     <div class="summary-grid" style="margin-bottom:0">
-      <div class="summary-card"><div class="summary-icon orange">🥚</div><div class="summary-info"><div class="label">Total Collected (Month)</div><div class="value">${fmt.number(s.total_eggs)}</div></div></div>
-      <div class="summary-card"><div class="summary-icon green">✅</div><div class="summary-info"><div class="label">Good Eggs</div><div class="value">${fmt.number(s.good_eggs)}</div></div></div>
-      <div class="summary-card"><div class="summary-icon red">❌</div><div class="summary-info"><div class="label">Broken/Damaged</div><div class="value">${fmt.number((s.broken_eggs||0)+(s.damaged_eggs||0))}</div></div></div>
-      <div class="summary-card"><div class="summary-icon blue">📦</div><div class="summary-info"><div class="label">Stock Remaining</div><div class="value">${fmt.number(s.stock_remaining)}</div></div></div>
-      <div class="summary-card"><div class="summary-icon green">💰</div><div class="summary-info"><div class="label">Eggs Sold</div><div class="value">${fmt.number(s.eggs_sold)}</div></div></div>
-      <div class="summary-card"><div class="summary-icon blue">📅</div><div class="summary-info"><div class="label">Days Recorded</div><div class="value">${s.days_recorded || 0}</div></div></div>
+      <div class="summary-card"><div class="summary-icon orange"></div><div class="summary-info"><div class="label">Total Collected (Month)</div><div class="value">${fmt.number(s.total_eggs)}</div></div></div>
+      <div class="summary-card"><div class="summary-icon green"></div><div class="summary-info"><div class="label">Good Eggs</div><div class="value">${fmt.number(s.good_eggs)}</div></div></div>
+      <div class="summary-card"><div class="summary-icon red"></div><div class="summary-info"><div class="label">Broken/Damaged</div><div class="value">${fmt.number((s.broken_eggs||0)+(s.damaged_eggs||0))}</div></div></div>
+      <div class="summary-card"><div class="summary-icon blue"></div><div class="summary-info"><div class="label">Stock Remaining</div><div class="value">${fmt.number(s.stock_remaining)}</div></div></div>
+      <div class="summary-card"><div class="summary-icon green"></div><div class="summary-info"><div class="label">Eggs Sold</div><div class="value">${fmt.number(s.eggs_sold)}</div></div></div>
+      <div class="summary-card"><div class="summary-icon blue"></div><div class="summary-info"><div class="label">Days Recorded</div><div class="value">${s.days_recorded || 0}</div></div></div>
     </div>
   `;
 }
@@ -33,7 +33,7 @@ function renderEggSummary(s) {
 function renderEggTable(records) {
   const tbody = document.getElementById('eggTableBody');
   if (!records.length) {
-    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">🥚</div><h4>No egg production records</h4><p>Click "Record Production" to start tracking</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon"></div><h4>No egg production records</h4><p>Click "Record Production" to start tracking</p></div></td></tr>`;
     return;
   }
   tbody.innerHTML = records.map(r => `
@@ -47,8 +47,8 @@ function renderEggTable(records) {
       <td>${fmt.number(r.eggs_sold)}</td>
       <td>${r.notes || '-'}</td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="editEggRecord('${r.uuid}', ${r.id})">✏️</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteEggRecord('${r.uuid}')">🗑️</button>
+        <button class="btn btn-sm btn-outline" onclick="editEggRecord('${r.uuid}', ${r.id})"></button>
+        <button class="btn btn-sm btn-danger" onclick="deleteEggRecord('${r.uuid}')"></button>
       </td>
     </tr>
   `).join('');

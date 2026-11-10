@@ -68,12 +68,12 @@ function renderProductionReport(data, start, end) {
   const sold = data.reduce((s, r) => s + r.eggs_sold, 0);
   return `
     <div id="printableReport">
-      <h3 style="margin-bottom:16px">🥚 Egg Production Report (${fmt.date(start)} – ${fmt.date(end)})</h3>
+      <h3 style="margin-bottom:16px"> Egg Production Report (${fmt.date(start)} – ${fmt.date(end)})</h3>
       <div class="summary-grid" style="margin-bottom:20px">
-        <div class="summary-card"><div class="summary-icon orange">🥚</div><div class="summary-info"><div class="label">Total Collected</div><div class="value">${fmt.number(total)}</div></div></div>
-        <div class="summary-card"><div class="summary-icon green">✅</div><div class="summary-info"><div class="label">Good Eggs</div><div class="value">${fmt.number(good)}</div></div></div>
-        <div class="summary-card"><div class="summary-icon blue">💰</div><div class="summary-info"><div class="label">Eggs Sold</div><div class="value">${fmt.number(sold)}</div></div></div>
-        <div class="summary-card"><div class="summary-icon green">📦</div><div class="summary-info"><div class="label">Stock Remaining</div><div class="value">${fmt.number(good - sold)}</div></div></div>
+        <div class="summary-card"><div class="summary-icon orange"></div><div class="summary-info"><div class="label">Total Collected</div><div class="value">${fmt.number(total)}</div></div></div>
+        <div class="summary-card"><div class="summary-icon green"></div><div class="summary-info"><div class="label">Good Eggs</div><div class="value">${fmt.number(good)}</div></div></div>
+        <div class="summary-card"><div class="summary-icon blue"></div><div class="summary-info"><div class="label">Eggs Sold</div><div class="value">${fmt.number(sold)}</div></div></div>
+        <div class="summary-card"><div class="summary-icon green"></div><div class="summary-info"><div class="label">Stock Remaining</div><div class="value">${fmt.number(good - sold)}</div></div></div>
       </div>
       <div class="table-wrapper"><table>
         <thead><tr><th>Date</th><th>Batch</th><th>Total</th><th>Good</th><th>Broken</th><th>Damaged</th><th>Sold</th></tr></thead>
@@ -86,7 +86,7 @@ function renderMortalityReport(data, start, end) {
   const total = data.reduce((s, r) => s + r.count, 0);
   return `
     <div id="printableReport">
-      <h3 style="margin-bottom:16px">💀 Mortality Report (${fmt.date(start)} – ${fmt.date(end)})</h3>
+      <h3 style="margin-bottom:16px"> Mortality Report (${fmt.date(start)} – ${fmt.date(end)})</h3>
       <div class="alert alert-error" style="margin-bottom:16px">Total Deaths: <strong>${total}</strong></div>
       <div class="table-wrapper"><table>
         <thead><tr><th>Date</th><th>Batch</th><th>Type</th><th>Count</th><th>Cause</th><th>Notes</th></tr></thead>
@@ -98,7 +98,7 @@ function renderMortalityReport(data, start, end) {
 function renderFeedReport(data, start, end) {
   return `
     <div id="printableReport">
-      <h3 style="margin-bottom:16px">🌾 Feed Consumption Report (${fmt.date(start)} – ${fmt.date(end)})</h3>
+      <h3 style="margin-bottom:16px"> Feed Consumption Report (${fmt.date(start)} – ${fmt.date(end)})</h3>
       <h4 style="margin-bottom:8px">Summary by Feed Type</h4>
       <div class="table-wrapper" style="margin-bottom:20px"><table>
         <thead><tr><th>Feed Name</th><th>Total (kg)</th><th>Total Cost</th></tr></thead>
@@ -115,11 +115,11 @@ function renderFeedReport(data, start, end) {
 function renderFinancialReport(data, start, end) {
   return `
     <div id="printableReport">
-      <h3 style="margin-bottom:16px">📊 Financial Report (${fmt.date(start)} – ${fmt.date(end)})</h3>
+      <h3 style="margin-bottom:16px"> Financial Report (${fmt.date(start)} – ${fmt.date(end)})</h3>
       <div class="summary-grid" style="margin-bottom:20px">
-        <div class="summary-card"><div class="summary-icon green">💰</div><div class="summary-info"><div class="label">Total Income</div><div class="value">${fmt.currency(data.total_income)}</div></div></div>
-        <div class="summary-card"><div class="summary-icon red">💸</div><div class="summary-info"><div class="label">Total Expenses</div><div class="value">${fmt.currency(data.total_expenses)}</div></div></div>
-        <div class="summary-card"><div class="summary-icon ${data.profit>=0?'green':'red'}">📈</div><div class="summary-info"><div class="label">Net Profit/Loss</div><div class="value ${data.profit>=0?'text-profit':'text-loss'}">${fmt.currency(data.profit)}</div></div></div>
+        <div class="summary-card"><div class="summary-icon green"></div><div class="summary-info"><div class="label">Total Income</div><div class="value">${fmt.currency(data.total_income)}</div></div></div>
+        <div class="summary-card"><div class="summary-icon red"></div><div class="summary-info"><div class="label">Total Expenses</div><div class="value">${fmt.currency(data.total_expenses)}</div></div></div>
+        <div class="summary-card"><div class="summary-icon ${data.profit>=0?'green':'red'}"></div><div class="summary-info"><div class="label">Net Profit/Loss</div><div class="value ${data.profit>=0?'text-profit':'text-loss'}">${fmt.currency(data.profit)}</div></div></div>
       </div>
       <h4 style="margin-bottom:8px">Expenses</h4>
       <div class="table-wrapper" style="margin-bottom:20px"><table>
@@ -137,7 +137,7 @@ function renderFinancialReport(data, start, end) {
 function renderVaccinationReport(data) {
   return `
     <div id="printableReport">
-      <h3 style="margin-bottom:16px">💉 Vaccination History Report</h3>
+      <h3 style="margin-bottom:16px"> Vaccination History Report</h3>
       <div class="table-wrapper"><table>
         <thead><tr><th>Batch</th><th>Vaccine</th><th>Date Given</th><th>Next Due</th><th>Method</th><th>By</th><th>Status</th></tr></thead>
         <tbody>${data.map(v => `<tr><td>${v.batch_number}</td><td>${v.vaccine_name}</td><td>${fmt.date(v.date_given)}</td><td>${fmt.date(v.next_due_date)}</td><td>${v.method||'-'}</td><td>${v.administered_by||'-'}</td><td><span class="badge ${v.status==='completed'?'badge-green':'badge-orange'}">${v.status}</span></td></tr>`).join('') || '<tr><td colspan="7" style="text-align:center">No vaccination records</td></tr>'}</tbody>
@@ -148,7 +148,7 @@ function renderVaccinationReport(data) {
 function renderInventoryReport(data, start, end) {
   return `
     <div id="printableReport">
-      <h3 style="margin-bottom:16px">📦 Inventory Usage Report (${fmt.date(start)} – ${fmt.date(end)})</h3>
+      <h3 style="margin-bottom:16px"> Inventory Usage Report (${fmt.date(start)} – ${fmt.date(end)})</h3>
       <div class="table-wrapper"><table>
         <thead><tr><th>Date</th><th>Item</th><th>Category</th><th>Type</th><th>Quantity</th><th>Unit</th></tr></thead>
         <tbody>${data.map(r => `<tr><td>${fmt.date(r.date)}</td><td>${r.name}</td><td>${r.category}</td><td><span class="badge ${r.type==='purchase'?'badge-green':'badge-orange'}">${r.type}</span></td><td>${r.quantity}</td><td>${r.unit}</td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center">No data</td></tr>'}</tbody>
@@ -160,7 +160,7 @@ function renderPopulationReport(batches) {
   const active = batches.filter(b => b.status === 'active');
   return `
     <div id="printableReport">
-      <h3 style="margin-bottom:16px">🐔 Poultry Population Report</h3>
+      <h3 style="margin-bottom:16px"> Poultry Population Report</h3>
       <div class="table-wrapper"><table>
         <thead><tr><th>Batch</th><th>Type</th><th>Breed</th><th>Initial</th><th>Current</th><th>Deaths</th><th>Mortality %</th><th>Status</th></tr></thead>
         <tbody>${batches.map(b => {

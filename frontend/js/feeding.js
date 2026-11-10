@@ -21,7 +21,7 @@ async function loadFeedSummary(farmId) {
 function renderFeedingTable(records) {
   const tbody = document.getElementById('feedingTableBody');
   if (!records.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🌾</div><h4>No feeding records</h4><p>Click "Record Feeding" to add a record</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon"></div><h4>No feeding records</h4><p>Click "Record Feeding" to add a record</p></div></td></tr>`;
     return;
   }
   tbody.innerHTML = records.map(r => `
@@ -32,7 +32,7 @@ function renderFeedingTable(records) {
       <td><strong>${r.quantity_kg} kg</strong></td>
       <td>${fmt.currency(r.cost)}</td>
       <td>${r.notes || '-'}</td>
-      <td><button class="btn btn-sm btn-danger" onclick="deleteFeedRecord(${r.id})">🗑️</button></td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteFeedRecord(${r.id})"></button></td>
     </tr>
   `).join('');
 }
@@ -93,7 +93,7 @@ async function loadFeedSchedules() {
     const schedules = await api.get(`/feeding/schedules?farm_id=${farmId}`);
     const tbody = document.getElementById('scheduleTableBody');
     if (!schedules.length) {
-      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📅</div><p>No schedules set</p></div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon"></div><p>No schedules set</p></div></td></tr>`;
       return;
     }
     tbody.innerHTML = schedules.map(s => `
