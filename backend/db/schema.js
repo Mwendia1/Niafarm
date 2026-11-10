@@ -1,45 +1,39 @@
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, 'niafarm.db');
-const raw = new sqlite3.Database(DB_PATH);
+const raw = new Database(DB_PATH);
 
-raw.run('PRAGMA journal_mode = WAL');
-raw.run('PRAGMA foreign_keys = ON');
+raw.pragma('journal_mode = WAL');
+raw.pragma('foreign_keys = ON');
 
+// Wrap better-sqlite3 sync API in async-compatible interface
 const db = {
   _raw: raw,
   run(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      raw.run(sql, params, function (err) {
-        if (err) reject(err);
-        else resolve({ lastInsertRowid: this.lastID, changes: this.changes });
-      });
-    });
+    try {
+      const stmt = raw.prepare(sql);
+      const result = stmt.run(params);
+      return Promise.resolve({ lastInsertRowid: result.lastInsertRowid, changes: result.changes });
+    } catch (err) { return Promise.reject(err); }
   },
   get(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      raw.get(sql, params, (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    try {
+      const stmt = raw.prepare(sql);
+      return Promise.resolve(stmt.get(params));
+    } catch (err) { return Promise.reject(err); }
   },
   all(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      raw.all(sql, params, (err, rows) => {
-        if (err) reject(err);
-        else resolve(rows || []);
-      });
-    });
+    try {
+      const stmt = raw.prepare(sql);
+      return Promise.resolve(stmt.all(params));
+    } catch (err) { return Promise.reject(err); }
   },
   exec(sql) {
-    return new Promise((resolve, reject) => {
-      raw.exec(sql, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    try {
+      raw.exec(sql);
+      return Promise.resolve();
+    } catch (err) { return Promise.reject(err); }
   }
 };
 
@@ -211,7 +205,7 @@ async function initSchema() {
     const ex = await db.get('SELECT id FROM feed_types WHERE name = ?', [name]);
     if (!ex) await db.run('INSERT INTO feed_types (name, category, description) VALUES (?,?,?)', [name, cat, desc]);
   }
-  // Migrate: add avatar column if missing
+
   try { await db.run('ALTER TABLE users ADD COLUMN avatar TEXT'); } catch {}
   console.log('Database ready');
 }
