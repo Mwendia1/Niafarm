@@ -11,8 +11,9 @@ async function loadFarmsPage() {
 
 function renderFarmsTable(farms) {
   const tbody = document.getElementById('farmsTableBody');
+  const canEdit = ['admin', 'farm_owner'].includes(state.getUser()?.role);
   if (!farms.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon"></div><h4>No farms registered</h4><p>Click "Add Farm" to register your first farm</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon"></div><h4>No farms registered</h4>${canEdit ? '<p>Click "Add Farm" to register your first farm</p>' : ''}</div></td></tr>`;
     return;
   }
   tbody.innerHTML = farms.map(f => `
@@ -23,9 +24,9 @@ function renderFarmsTable(farms) {
       <td>${f.farming_type || '-'}</td>
       <td>${f.phone || '-'}</td>
       <td>${fmt.date(f.registration_date)}</td>
-      <td>
+      <td>${canEdit ? `
         <button class="btn btn-sm btn-primary" onclick="editFarm('${f.uuid}')"> Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteFarm('${f.uuid}', '${f.name}')"></button>
+        <button class="btn btn-sm btn-danger" onclick="deleteFarm('${f.uuid}', '${f.name}')"></button>` : '-'}
       </td>
     </tr>
   `).join('');

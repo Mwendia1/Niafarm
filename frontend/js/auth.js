@@ -22,6 +22,9 @@ function showAuthPage(page) {
 async function showApp(user) {
   document.getElementById('authSection').style.display = 'none';
   document.getElementById('app').classList.add('visible');
+  // Clear stale farm selection so loadFarms() always picks the correct farm for this user
+  localStorage.removeItem('nf_farm_id');
+  state.currentFarm = null;
   const avatarEl = document.getElementById('userAvatar');
   const avatarMenuEl = document.getElementById('userAvatarMenu');
   const avatarSrc = user.avatar ? user.avatar : null;
@@ -36,6 +39,10 @@ async function showApp(user) {
   }
   document.getElementById('userName').textContent = user.name;
   document.getElementById('userRole').textContent = user.role.replace(/_/g, ' ');
+  const canEdit = ['admin', 'farm_owner'].includes(user.role);
+  const addFarmBtn = document.getElementById('addFarmBtn');
+  if (addFarmBtn) addFarmBtn.style.display = canEdit ? '' : 'none';
+  document.querySelector('[data-page="farms"]').style.display = canEdit ? '' : 'none';
   const farms = await loadFarms();
   if (farms.length === 0) {
     navigate('farms');
@@ -58,8 +65,8 @@ document.getElementById('loginFormEl').addEventListener('submit', async (e) => {
     });
     localStorage.setItem('nf_token', data.token);
     // Fetch full profile to get avatar
-    const profile = await fetch('/api/auth/profile', { headers: { 'Authorization': `Bearer ${data.token}` } }).then(r => r.json());
-    const user = { ...data.user, avatar: profile.avatar };
+    const profile = await fetch('http://localhost:3000/api/auth/profile', { headers: { 'Authorization': `Bearer ${data.token}` } }).then(r => r.json());
+    const user = { ...data.user, avatar: profile.avatar, job_title: profile.job_title };
     state.setUser(user);
     showApp(user);
   } catch (err) {

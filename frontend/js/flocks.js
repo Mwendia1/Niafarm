@@ -45,10 +45,11 @@ function renderBatchesTable(batches) {
       <td>${fmt.date(b.arrival_date)}</td>
       <td><span class="badge ${b.status === 'active' ? 'badge-green' : 'badge-grey'}">${b.status}</span></td>
       <td>
-        <button class="btn btn-sm btn-outline" onclick="viewBatch('${b.uuid}')"></button>
-        <button class="btn btn-sm btn-outline" onclick="editBatch('${b.uuid}')"></button>
-        <button class="btn btn-sm btn-warning" onclick="openMortalityModal('${b.uuid}', '${b.batch_number}')"></button>
-        <button class="btn btn-sm btn-danger" onclick="closeBatch('${b.uuid}', '${b.batch_number}')"></button>
+        <button class="btn btn-sm btn-outline" onclick="viewBatch('${b.uuid}')"> View</button>
+        <button class="btn btn-sm btn-outline" onclick="editBatch('${b.uuid}')"> Edit</button>
+        <button class="btn btn-sm btn-warning" onclick="openMortalityModal('${b.uuid}', '${b.batch_number}')"> Mortality</button>
+        <button class="btn btn-sm btn-danger" onclick="closeBatch('${b.uuid}', '${b.batch_number}')"> Close</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteBatch('${b.uuid}', '${b.batch_number}')"> Delete</button>
       </td>
     </tr>`;
   }).join('');

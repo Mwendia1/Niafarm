@@ -2,6 +2,11 @@
 async function loadHealth() {
   const farmId = state.getCurrentFarmId();
   if (!farmId) return;
+  const editable = canEditHealth();
+  ['healthTemplatesBtn', 'addVaccinationBtn', 'addHealthBtn'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = editable ? '' : 'none';
+  });
   await populateBatchSelects(farmId);
   try {
     const [records, vaccinations] = await Promise.all([
@@ -14,10 +19,16 @@ async function loadHealth() {
   } catch (err) { toast.error('Failed to load health records: ' + err.message); }
 }
 
+function canEditHealth() {
+  const u = state.getUser();
+  return ['admin', 'farm_owner'].includes(u?.role) || u?.job_title === 'Veterinarian';
+}
+
 function renderHealthTable(records) {
   const tbody = document.getElementById('healthTableBody');
+  const editable = canEditHealth();
   if (!records.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon"></div><h4>No health records</h4><p>Click "Add Health Record" to start tracking</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon"></div><h4>No health records</h4>${editable ? '<p>Click "Add Health Record" to start tracking</p>' : ''}</div></td></tr>`;
     return;
   }
   const typeColors = { disease: 'badge-red', treatment: 'badge-blue', checkup: 'badge-green', injury: 'badge-orange' };
@@ -29,9 +40,9 @@ function renderHealthTable(records) {
       <td>${r.description || '-'}</td>
       <td>${r.medication || '-'}</td>
       <td>${fmt.currency(r.cost)}</td>
-      <td>
+      <td>${editable ? `
         <button class="btn btn-sm btn-outline" onclick="editHealthRecord('${r.uuid}')"></button>
-        <button class="btn btn-sm btn-danger" onclick="deleteHealthRecord('${r.uuid}')"></button>
+        <button class="btn btn-sm btn-danger" onclick="deleteHealthRecord('${r.uuid}')"></button>` : '-'}
       </td>
     </tr>
   `).join('');
@@ -44,6 +55,7 @@ function renderVaccinationTable(vaccinations) {
     return;
   }
   const today = new Date();
+  const editable = canEditHealth();
   tbody.innerHTML = vaccinations.map(v => {
     const due = v.next_due_date ? new Date(v.next_due_date) : null;
     const isOverdue = due && due < today && v.status !== 'completed';
@@ -60,9 +72,9 @@ function renderVaccinationTable(vaccinations) {
       <td>${fmt.date(v.next_due_date)}</td>
       <td>${v.administered_by || '-'}</td>
       <td>${statusBadge}</td>
-      <td>
+      <td>${editable ? `
         <button class="btn btn-sm btn-outline" onclick="markVaccinationDone('${v.uuid}')"> Done</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteVaccination('${v.uuid}')"></button>
+        <button class="btn btn-sm btn-danger" onclick="deleteVaccination('${v.uuid}')"></button>` : '-'}
       </td>
     </tr>`;
   }).join('');

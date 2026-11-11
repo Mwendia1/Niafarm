@@ -3,8 +3,11 @@ let eggChart, financeChart, flockChart;
 
 async function loadDashboard() {
   const farmId = state.getCurrentFarmId();
-  if (!farmId) return;
   const container = document.getElementById('dashboardContent');
+  if (!farmId) {
+    container.innerHTML = `<div class="alert alert-warning">No farm selected. Please select a farm from the sidebar.</div>`;
+    return;
+  }
   container.innerHTML = `<div class="loading"><div class="spinner"></div> Loading dashboard...</div>`;
   try {
     const data = await api.get(`/reports/dashboard?farm_id=${farmId}`);

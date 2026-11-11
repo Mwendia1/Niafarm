@@ -18,8 +18,12 @@ router.get('/', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+const canEditHealth = (user) => ['admin', 'farm_owner'].includes(user.role) || user.job_title === 'Veterinarian';
+
 router.post('/', async (req, res) => {
   try {
+    const editor = await db.get('SELECT role, job_title FROM users WHERE id = ?', [req.user.id]);
+    if (!canEditHealth(editor)) return res.status(403).json({ error: 'Only farm owners and veterinarians can add health records' });
     const { farm_id, batch_id, date, type, description, treatment, medication, dosage, vet_name, cost, outcome, notes } = req.body;
     if (!farm_id || !batch_id || !date || !type) return res.status(400).json({ error: 'Required fields missing' });
     await db.run('INSERT INTO health_records (uuid, batch_id, farm_id, date, type, description, treatment, medication, dosage, vet_name, cost, outcome, notes, recorded_by) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -32,6 +36,8 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
+    const editor = await db.get('SELECT role, job_title FROM users WHERE id = ?', [req.user.id]);
+    if (!canEditHealth(editor)) return res.status(403).json({ error: 'Forbidden' });
     const { type, description, treatment, medication, dosage, vet_name, cost, outcome, notes } = req.body;
     await db.run('UPDATE health_records SET type=?, description=?, treatment=?, medication=?, dosage=?, vet_name=?, cost=?, outcome=?, notes=? WHERE uuid=?',
       [type, description, treatment, medication, dosage, vet_name, cost, outcome, notes, req.params.id]);
@@ -41,7 +47,8 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    await db.run('DELETE FROM health_records WHERE uuid = ?', [req.params.id]);
+    const editor = await db.get('SELECT role, job_title FROM users WHERE id = ?', [req.user.id]);
+    if (!canEditHealth(editor)) return res.status(403).json({ error: 'Forbidden' });
     res.json({ message: 'Deleted' });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -61,6 +68,8 @@ router.get('/vaccinations', async (req, res) => {
 
 router.post('/vaccinations', async (req, res) => {
   try {
+    const editor = await db.get('SELECT role, job_title FROM users WHERE id = ?', [req.user.id]);
+    if (!canEditHealth(editor)) return res.status(403).json({ error: 'Only farm owners and veterinarians can add vaccination records' });
     const { farm_id, batch_id, vaccine_name, date_given, next_due_date, age_at_vaccination, method, administered_by, cost, status, notes } = req.body;
     if (!farm_id || !batch_id || !vaccine_name) return res.status(400).json({ error: 'Required fields missing' });
     await db.run('INSERT INTO vaccination_records (uuid, batch_id, farm_id, vaccine_name, date_given, next_due_date, age_at_vaccination, method, administered_by, cost, status, notes) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -78,6 +87,8 @@ router.post('/vaccinations', async (req, res) => {
 
 router.put('/vaccinations/:id', async (req, res) => {
   try {
+    const editor = await db.get('SELECT role, job_title FROM users WHERE id = ?', [req.user.id]);
+    if (!canEditHealth(editor)) return res.status(403).json({ error: 'Forbidden' });
     const { vaccine_name, date_given, next_due_date, age_at_vaccination, method, administered_by, cost, status, notes } = req.body;
     await db.run('UPDATE vaccination_records SET vaccine_name=?, date_given=?, next_due_date=?, age_at_vaccination=?, method=?, administered_by=?, cost=?, status=?, notes=? WHERE uuid=?',
       [vaccine_name, date_given, next_due_date, age_at_vaccination, method, administered_by, cost, status, notes, req.params.id]);
@@ -87,6 +98,8 @@ router.put('/vaccinations/:id', async (req, res) => {
 
 router.delete('/vaccinations/:id', async (req, res) => {
   try {
+    const editor = await db.get('SELECT role, job_title FROM users WHERE id = ?', [req.user.id]);
+    if (!canEditHealth(editor)) return res.status(403).json({ error: 'Forbidden' });
     await db.run('DELETE FROM vaccination_records WHERE uuid = ?', [req.params.id]);
     res.json({ message: 'Deleted' });
   } catch (err) { res.status(500).json({ error: err.message }); }

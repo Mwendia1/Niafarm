@@ -11,8 +11,14 @@ router.get('/', async (req, res) => {
     let farms;
     if (req.user.role === 'admin') {
       farms = await db.all('SELECT f.*, u.name as owner_name FROM farms f JOIN users u ON f.owner_id = u.id WHERE f.is_active = 1');
-    } else {
+    } else if (req.user.role === 'farm_owner') {
       farms = await db.all('SELECT f.*, u.name as owner_name FROM farms f JOIN users u ON f.owner_id = u.id WHERE f.owner_id = ? AND f.is_active = 1', [req.user.id]);
+    } else {
+      // Member: get farms belonging to the owner who added them
+      const me = await db.get('SELECT added_by FROM users WHERE id = ?', [req.user.id]);
+      const ownerId = me?.added_by;
+      if (!ownerId) return res.json([]);
+      farms = await db.all('SELECT f.*, u.name as owner_name FROM farms f JOIN users u ON f.owner_id = u.id WHERE f.owner_id = ? AND f.is_active = 1', [ownerId]);
     }
     res.json(farms);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -28,6 +34,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
+    if (!['admin', 'farm_owner'].includes(req.user.role)) return res.status(403).json({ error: 'Only farm owners can register farms' });
     const { name, location, owner_name, phone, email, size, farming_type, num_houses, registration_date } = req.body;
     if (!name) return res.status(400).json({ error: 'Farm name required' });
     const uuid = uuidv4();
@@ -43,6 +50,7 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
+    if (!['admin', 'farm_owner'].includes(req.user.role)) return res.status(403).json({ error: 'Only farm owners can edit farms' });
     const { name, location, owner_name, phone, email, size, farming_type, num_houses, registration_date } = req.body;
     await db.run(
       "UPDATE farms SET name=?, location=?, owner_name=?, phone=?, email=?, size=?, farming_type=?, num_houses=?, registration_date=?, updated_at=datetime('now') WHERE uuid=?",
@@ -54,6 +62,7 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
+    if (!['admin', 'farm_owner'].includes(req.user.role)) return res.status(403).json({ error: 'Only farm owners can delete farms' });
     await db.run('UPDATE farms SET is_active = 0 WHERE uuid = ?', [req.params.id]);
     res.json({ message: 'Farm deleted' });
   } catch (err) { res.status(500).json({ error: err.message }); }

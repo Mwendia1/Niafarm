@@ -8,8 +8,10 @@ async function loadSettings() {
   document.getElementById('settingRole').textContent = user.role?.replace(/_/g, ' ') || '';
   updateAvatarDisplay(user);
   const usersTabBtn = document.querySelector('.tab-btn[onclick*="usersTab"]');
-  if (usersTabBtn) usersTabBtn.style.display = user.role === 'admin' ? '' : 'none';
-  if (user.role === 'admin') loadUsersList();
+  if (usersTabBtn) usersTabBtn.style.display = ['admin', 'farm_owner'].includes(user.role) ? '' : 'none';
+  const securityTabBtn = document.querySelector('.tab-btn[onclick*="securityTab"]');
+  if (securityTabBtn) securityTabBtn.style.display = ['admin', 'farm_owner'].includes(user.role) ? '' : 'none';
+  if (['admin', 'farm_owner'].includes(user.role)) loadUsersList();
 }
 
 function updateAvatarDisplay(user) {
@@ -88,20 +90,76 @@ async function changePassword() {
 
 async function loadUsersList() {
   try {
-    const users = await api.get('/auth/users');
+    const me = state.getUser();
+    const endpoint = me.role === 'admin' ? '/auth/users' : '/auth/members';
+    const users = await api.get(endpoint);
     const tbody = document.getElementById('usersTableBody');
     if (!tbody) return;
-    const me = state.getUser();
-    tbody.innerHTML = users.map(u => `
+    tbody.innerHTML = users.length === 0
+      ? `<tr><td colspan="7" style="text-align:center;color:var(--grey-500)">No members added yet</td></tr>`
+      : users.map(u => `
       <tr>
         <td>${u.name}</td>
         <td>${u.email}</td>
         <td>${u.phone || '-'}</td>
-        <td><span class="badge badge-blue">${u.role.replace(/_/g, ' ')}</span></td>
+        <td>${u.job_title || '-'}</td>
+        <td>
+          <select class="form-control" style="width:140px;padding:4px 8px;font-size:12px" onchange="updateMemberRole(${u.id}, this.value)">
+            <option value="farm_manager" ${u.role === 'farm_manager' ? 'selected' : ''}>Farm Manager</option>
+            <option value="farm_worker" ${u.role === 'farm_worker' ? 'selected' : ''}>Farm Worker</option>
+            <option value="accountant" ${u.role === 'accountant' ? 'selected' : ''}>Accountant</option>
+            ${me.role === 'admin' ? `<option value="farm_owner" ${u.role === 'farm_owner' ? 'selected' : ''}>Farm Owner</option>` : ''}
+          </select>
+        </td>
         <td><span class="badge ${u.is_active ? 'badge-green' : 'badge-red'}">${u.is_active ? 'Active' : 'Inactive'}</span></td>
-        <td>${fmt.date(u.created_at)}</td>
-        <td>${u.id !== me.id ? `<button class="btn btn-sm btn-primary" onclick="impersonateUser(${u.id},'${u.name}')">Login as</button>` : '<span style="color:var(--grey-700)">You</span>'}</td>
+        <td style="display:flex;gap:6px">
+          ${me.role === 'admin' ? `<button class="btn btn-sm btn-outline" onclick="impersonateUser(${u.id},'${u.name}')">Login as</button>` : ''}
+          <button class="btn btn-sm btn-danger" onclick="removeMember(${u.id},'${u.name}')">Remove</button>
+        </td>
       </tr>
     `).join('');
   } catch {}
+}
+
+function openAddMemberModal() {
+  resetForm('memberForm');
+  modal.open('memberModal');
+}
+
+function autoSetRole(select) {
+  const map = {
+    'Farm Manager': 'farm_manager', 'Supervisor': 'farm_manager',
+    'Accountant': 'accountant',
+    'Farm Worker': 'farm_worker', 'Veterinarian': 'farm_worker',
+    'Driver': 'farm_worker', 'Security': 'farm_worker'
+  };
+  const roleSelect = document.getElementById('memberRoleSelect');
+  if (roleSelect && map[select.value]) roleSelect.value = map[select.value];
+}
+
+async function saveMember() {
+  const data = getFormData('memberForm');
+  if (!data.name || !data.email || !data.password) { toast.error('Name, email and password required'); return; }
+  try {
+    await api.post('/auth/members', data);
+    toast.success(`${data.name} added successfully`);
+    modal.close('memberModal');
+    loadUsersList();
+  } catch (err) { toast.error(err.message); }
+}
+
+async function updateMemberRole(id, role) {
+  try {
+    await api.put(`/auth/members/${id}/role`, { role });
+    toast.success('Role updated');
+  } catch (err) { toast.error(err.message); loadUsersList(); }
+}
+
+async function removeMember(id, name) {
+  if (!confirm(`Remove ${name} from your farm?`)) return;
+  try {
+    await api.delete(`/auth/members/${id}`);
+    toast.success(`${name} removed`);
+    loadUsersList();
+  } catch (err) { toast.error(err.message); }
 }

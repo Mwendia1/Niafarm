@@ -12,7 +12,40 @@ async function loadInventory() {
     ]);
     renderInventoryAlerts(lowStock, expiring);
     renderInventoryTable(items);
+    loadAmenitiesDropdown(farmId);
   } catch (err) { toast.error('Failed to load inventory: ' + err.message); }
+}
+
+async function loadAmenitiesDropdown(farmId) {
+  try {
+    const farm = state.currentFarm;
+    if (!farm) return;
+    const houses = await api.get(`/farms/${farm.uuid}/houses`);
+    const sel = document.getElementById('amenitiesDropdown');
+    if (!sel) return;
+    sel.innerHTML = `<option value="">🏠 Farm Amenities (${houses.length})</option>` +
+      houses.map(h => `<option value="${h.uuid}" data-house='${JSON.stringify(h).replace(/'/g, "&apos;")}'>${h.name} (cap: ${h.capacity})</option>`).join('');
+    if (!houses.length) sel.innerHTML = `<option value="">🏠 No houses added</option>`;
+  } catch {}
+}
+
+function openAmenity(sel) {
+  const opt = sel.options[sel.selectedIndex];
+  if (!opt.value) return;
+  try {
+    const h = JSON.parse(opt.dataset.house.replace(/&apos;/g, "'"));
+    const content = `
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--grey-600)">Name</span><strong>${h.name}</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--grey-600)">Capacity</span><strong>${fmt.number(h.capacity)} birds</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--grey-600)">Description</span><strong>${h.description || '-'}</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--grey-600)">Added</span><strong>${fmt.date(h.created_at)}</strong></div>
+      </div>`;
+    document.getElementById('amenityModalTitle').textContent = `🏠 ${h.name}`;
+    document.getElementById('amenityModalContent').innerHTML = content;
+    modal.open('amenityModal');
+  } catch {}
+  sel.value = '';
 }
 
 function renderInventoryAlerts(lowStock, expiring) {
@@ -120,7 +153,39 @@ async function saveTransaction() {
   } catch (err) { toast.error(err.message); }
 }
 
-function filterInventory() {
+function toggleInventoryMenu(e) {
+  e.stopPropagation();
+  const sub = document.getElementById('inventorySubMenu');
+  const arrow = document.getElementById('inventoryArrow');
+  const open = sub.style.display === 'block';
+  sub.style.display = open ? 'none' : 'block';
+  arrow.style.transform = open ? '' : 'rotate(180deg)';
+  if (!open) navigate('inventory');
+}
+
+async function openAmenitiesPanel() {
+  modal.open('amenitiesPanelModal');
+  const el = document.getElementById('amenitiesPanelContent');
+  try {
+    const farm = state.currentFarm;
+    if (!farm) { el.innerHTML = '<p class="text-muted">No farm selected.</p>'; return; }
+    const houses = await api.get(`/farms/${farm.uuid}/houses`);
+    if (!houses.length) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">🏠</div><h4>No amenities added</h4><p>Add houses from Farm Registration page.</p></div>`;
+      return;
+    }
+    el.innerHTML = houses.map(h => `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--grey-200);border-radius:8px;margin-bottom:8px">
+        <div style="font-size:28px">🏠</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px">${h.name}</div>
+          <div style="font-size:12px;color:var(--grey-600)">Capacity: ${fmt.number(h.capacity)} birds</div>
+          ${h.description ? `<div style="font-size:12px;color:var(--grey-500)">${h.description}</div>` : ''}
+        </div>
+        <div class="badge badge-green">Active</div>
+      </div>`).join('');
+  } catch (err) { el.innerHTML = `<div class="alert alert-error">${err.message}</div>`; }
+}
   const q = document.getElementById('inventorySearch').value.toLowerCase();
   const cat = document.getElementById('inventoryCatFilter').value;
   document.querySelectorAll('#inventoryTableBody tr').forEach(row => {

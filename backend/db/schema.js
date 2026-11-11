@@ -1,39 +1,32 @@
-const Database = require('better-sqlite3');
+const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, 'niafarm.db');
-const raw = new Database(DB_PATH);
+const raw = new sqlite3.Database(DB_PATH);
 
-raw.pragma('journal_mode = WAL');
-raw.pragma('foreign_keys = ON');
-
-// Wrap better-sqlite3 sync API in async-compatible interface
 const db = {
-  _raw: raw,
   run(sql, params = []) {
-    try {
-      const stmt = raw.prepare(sql);
-      const result = stmt.run(params);
-      return Promise.resolve({ lastInsertRowid: result.lastInsertRowid, changes: result.changes });
-    } catch (err) { return Promise.reject(err); }
+    return new Promise((resolve, reject) => {
+      raw.run(sql, params, function(err) {
+        if (err) reject(err);
+        else resolve({ lastInsertRowid: this.lastID, changes: this.changes });
+      });
+    });
   },
   get(sql, params = []) {
-    try {
-      const stmt = raw.prepare(sql);
-      return Promise.resolve(stmt.get(params));
-    } catch (err) { return Promise.reject(err); }
+    return new Promise((resolve, reject) => {
+      raw.get(sql, params, (err, row) => err ? reject(err) : resolve(row));
+    });
   },
   all(sql, params = []) {
-    try {
-      const stmt = raw.prepare(sql);
-      return Promise.resolve(stmt.all(params));
-    } catch (err) { return Promise.reject(err); }
+    return new Promise((resolve, reject) => {
+      raw.all(sql, params, (err, rows) => err ? reject(err) : resolve(rows));
+    });
   },
   exec(sql) {
-    try {
-      raw.exec(sql);
-      return Promise.resolve();
-    } catch (err) { return Promise.reject(err); }
+    return new Promise((resolve, reject) => {
+      raw.exec(sql, err => err ? reject(err) : resolve());
+    });
   }
 };
 
@@ -207,6 +200,8 @@ async function initSchema() {
   }
 
   try { await db.run('ALTER TABLE users ADD COLUMN avatar TEXT'); } catch {}
+  try { await db.run('ALTER TABLE users ADD COLUMN job_title TEXT'); } catch {}
+  try { await db.run('ALTER TABLE users ADD COLUMN added_by INTEGER'); } catch {}
   console.log('Database ready');
 }
 

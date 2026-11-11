@@ -1,5 +1,5 @@
 // ===== API CLIENT =====
-const API_BASE = '/api';
+const API_BASE = 'http://localhost:3000/api';
 
 const api = {
   token: () => localStorage.getItem('nf_token'),
@@ -15,7 +15,8 @@ const api = {
       const opts = { method, headers: this.headers() };
       if (body) opts.body = JSON.stringify(body);
       const res = await fetch(API_BASE + path, opts);
-      const data = await res.json();
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
       if (!res.ok) throw new Error(data.error || 'Request failed');
       return data;
     } catch (err) {
@@ -212,16 +213,15 @@ async function loadFarms() {
   try {
     const farms = await api.get('/farms');
     state.setFarms(farms);
-    const sel = document.getElementById('farmSelector');
-    if (sel) {
-      sel.innerHTML = farms.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
-      const savedId = state.getCurrentFarmId();
-      if (savedId) sel.value = savedId;
-      const selected = farms.find(f => f.id == sel.value) || farms[0];
-      if (selected) {
-        state.setCurrentFarm(selected);
+    if (farms.length > 0) {
+      const selected = farms[0];
+      state.setCurrentFarm(selected);
+      const sel = document.getElementById('farmSelector');
+      if (sel) {
+        sel.innerHTML = farms.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
         sel.value = selected.id;
       }
+      await populateBatchSelects(selected.id);
     }
     return farms;
   } catch { return []; }

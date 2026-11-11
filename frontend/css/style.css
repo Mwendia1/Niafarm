@@ -349,6 +349,12 @@ body {
   font-weight: 600;
 }
 
+.nav-item.nav-sub {
+  padding-left: 40px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+}
+
 /* Main content */
 .main-content {
   margin-left: var(--sidebar-width);
