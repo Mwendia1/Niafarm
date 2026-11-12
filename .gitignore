@@ -4,6 +4,6 @@ backend/uploads/avatars/*
 !backend/uploads/avatars/.gitkeep
 .env
 # SQLite temporary files
+# SQLite database files
 *.db-shm
 *.db-wal
-*.db-journal
